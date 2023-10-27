@@ -1,0 +1,11 @@
+environment: dev
+    
+redis_host: master.gonchi-dev-elascache-rep-group.u0khnz.use2.cache.amazonaws.com # This value was modified by the deploy-infra pipeline
+
+deployment:
+  image:  
+    tag: 1082
+  replicas: 1
+
+secret:
+  redis_pass: AgAuHJAtN3Mt8145k4ymy2pDDarUQx7AxorHDE5FftauRsN2wyvsysvz1WVCD4m4qQ++dX5IkMXp61IZXVq8IddyFwYod7VvuAlVD09HSVjICQkqdloDuYh0nlfuv5JmurRc8rCUNOuKUjfw50eEx4i9XC3Qp5F9tALhVbQlhKvJGySQNqTjBhqTw7p10P0ARt1pDAoLgIaW0dgKt6MK1nXuRT+nSpeEAWtmKgghYkJCXKwlyo02rLzdWdfwMwW7f++cDmmb1nVoOKof/5eOIRCkTznuuukz+c0qO3WKJVxGaZaHnZm19OfnWn8FoEuJs0saZGK0FsZh9xxPGCT1S7K1j0iknDMOr5v/jVVd5zHNvwuSX8fuPQEY3PtWNZgL+EAeuLarcMrSv1aLiCBTJ/gSRAImd+yx3cpWRz33GlBeLLYiYhY6/QBvFNSVUcy7srkWQvbS5IhWRgG9G5AWjAzjXezVjAVn445ud4l/wbR+SAupIbV4aL8JB+q51EgC8DfQ5JpQBFj/ubkQq54I2jKQN8SjcIU/V3l2/LqB7KwhqwBHXs6VsT7ENNYFf0yeQLTN63pfZG+494CkV7uOIvDxojYr+up/VxyFFu7aoPDzqIm6jHwJhw1po12QEMtFZZEYDqzpxxRg8vhQhdERI+FdX2uoP7iNlXcAMz2UHhAsuNpRBa123E0g3ZTD667TisFCA/9FqMd6Yo9ouflGHkLUwiG//LpVQqmvR3k= # This value was modified by the sealed-secrets pipeline
