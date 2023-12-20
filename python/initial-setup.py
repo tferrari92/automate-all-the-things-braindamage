@@ -132,7 +132,6 @@ def search_and_replace(directory, replacements):
                              'kiali-operator-application.yaml',
                              'kube-prometheus-stack-application.yaml',
                              'loki-stack-application.yaml',
-                             'sealed-secrets-application.yaml',
                              'argocd-application.yaml',
                              'argocd-appprojects-application.yaml',
                              'argocd-apps-application.yaml',
