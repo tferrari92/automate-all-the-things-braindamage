@@ -515,7 +515,7 @@ You could easily encrypt the secrets yourselves using the kubeseal CLI tool, but
 5. Select "Existing Azure Pipelines YAML file".
 6. Under "Branch" select "main" and under "Path" select "/azure-devops/02-sealed-secret-generator.yml". Click "Continue".
 7. If you DON'T have a hosted parallelism, you'll need to do the same thing as in point 10 from the [infrastructure deployment pipeline](#instructions).
-8. Click on "Run".
+8. Click on "Run". It will fail the first time because you haven't passed in the the values, just run it again.
 
 
 <br/>
