@@ -485,9 +485,7 @@ Finally the pipeline will get the ArgoCD web UI URL and admin account password a
 9. When it's done, the endpoints and ArgoCD access files will be exported as artifacts. You'll find them in the pipeline run screen. Download them to see the ArgoCD URL and credentials, and the frontend endpoints.
 <p title="Guide" align="center"> <img width="700" src="https://i.imgur.com/UtZyCCe.png"> </p>
 
-10. You can now access the ArgoCD UI, if it's not ready just hit refresh every few seconds. Here you should find all the applications. Three will be under the "argocd" project, these are necessary for ArgoCD self-management.<br>
-You will also see a few other applications related to our new service mesh implementation, they will be under the "service-mesh" project. We'll explore these later.<br>
-Another six applications will be under the "my-app" project. These manage our app's backend and frontend in the three environments. These will be in a "Progressing/Degraded" state. This is because we haven't built our app and pushed it to DockerHub yet, we'll take care of that soon. From the other exported artifact, you'll get the URLs for each enviroment's frontend, but don't expect these to work until we have deployed our app.  
+10. You can now access the ArgoCD UI, if it's not ready just hit refresh every few seconds.
 
 <br/>
 <br/>
