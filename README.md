@@ -734,7 +734,6 @@ Special thanks to all these wonderful YouTube people. This wouldn't have been po
 
 [Automate All The Things Transcendence Edition](https://github.com/tferrari92/automate-all-the-things-transcendence):
 
-- We'll implement ArgoCD Notifications.
 - We'll start using Horizontal Pod Autoscalers.
 - We'll automate TLS certificates management with Kubernetes Cert Manager.
 - We'll automate DNS records management with Kubernetes External DNS.
