@@ -4,7 +4,5 @@ deployment:
   image:  
     tag: 
   replicas: 1
-  
   labels:
-    environment: dev
-    app: ${{ values.system }}-${{ values.service }}-dev
+    full-name: ${{ values.system }}-${{ values.service }}-dev
