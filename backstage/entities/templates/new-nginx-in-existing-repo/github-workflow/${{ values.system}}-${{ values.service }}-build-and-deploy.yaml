@@ -1,4 +1,4 @@
-name: Build & push ${{ values.system }}-${{ values.service }} image
+name: ${{ values.system }}-${{ values.service }} build & deploy
 
 on:
   workflow_dispatch:
