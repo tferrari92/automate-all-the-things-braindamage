@@ -12,7 +12,7 @@ metadata:
     - redis 
   links:
     - title: Documentation
-      url: https://github.com/AATT_GITHUB_USERNAME/automate-all-the-things-unnamed
+      url: https://github.com/AATT_GITHUB_USERNAME/automate-all-the-things-braindamage
     - title: Admin Dashboard
       type: admin-dashboard
       icon: dashboard
@@ -24,7 +24,7 @@ metadata:
     - title: Logs
       type: logs-dashboard  
       icon: assignment
-      url: https://grafana.domain.com/ 
+      url: https://grafana.domain.com/
 spec:
   type: database
   lifecycle: production
