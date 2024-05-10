@@ -1,4 +1,4 @@
-system: meme-web # This value was modified by the initial-setup python script
+system: meme-web 
 
 service: backend
 
@@ -6,9 +6,9 @@ port: 3000
 
 deployment:
   labels:
-    system: meme-web # This value was modified by the initial-setup python script
+    system: meme-web 
     service: backend
-    backstage.io/kubernetes-id: meme-web-backend # This value was modified by the initial-setup python script
+    backstage.io/kubernetes-id: meme-web-backend 
     istio: monitor
 
   
