@@ -6,9 +6,8 @@ port: 3000
 
 deployment:
   labels:
-    # app: meme-web-frontend
-    service: backend
     system: meme-web # This value was modified by the initial-setup python script
+    service: backend
     backstage.io/kubernetes-id: meme-web-backend # This value was modified by the initial-setup python script
     istio: monitor
 
