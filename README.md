@@ -77,12 +77,12 @@ This Braindamage Edition builds upon the [Overload Edition](https://github.com/t
 - [Sealed Secrets Pipeline](#sealed-secrets-pipeline)
   - [Description](#description-2)
   - [Instructions](#instructions-2)
-- [Backend Service Build & Deploy Pipeline](#backend-service-build--deploy-pipeline)
+<!-- - [Backend Service Build & Deploy Pipeline](#backend-service-build--deploy-pipeline)
   - [Description](#description-3)
   - [Instructions](#instructions-3)
 - [Frontend Service Build & Deploy Pipeline](#frontend-service-build--deploy-pipeline)
   - [Description](#description-4)
-  - [Instructions](#instructions-4)
+  - [Instructions](#instructions-4) -->
 - [Kubernetes Tools Management](#kubernetes-tools-management)
   - [Description](#description-5)
   - [Instructions](#instructions-5)
@@ -164,7 +164,7 @@ Our app is a very simple static website, but I'm not spoiling it for you. You'll
 
 ## Disclaimer
 
-This is not a free project, it will cost you between $1 US dollars and $10 depending on how long you run the resources for. That's assuming you run them for a few hours tops, not days. Always remember to run the [destroy-all-the-things pipeline](/.github/workflows/06-destroy-all-the-things.yaml) when you are done.
+This is not a free project, it will cost you between $1 US dollars and $10 depending on how long you run the resources for. That's assuming you run them for a few hours tops, not days. Always remember to run the [destroy-all-the-things pipeline](/.github/workflows/04-destroy-all-the-things.yaml) when you are done.
 
 Some things could have been further automated but I prioritized modularization and separation of concerns.<br>
 
@@ -606,7 +606,7 @@ Same will be done for the GitHub token secret that Backstage will use.
 <br/>
 
 
-# BACKEND SERVICE BUILD & DEPLOY PIPELINE
+<!-- # BACKEND SERVICE BUILD & DEPLOY PIPELINE
 
 ## Description
 
@@ -683,7 +683,7 @@ For the infrastructure, same as before. If the infrastrucure team needs to, for 
 <br/>
 <p title="Anakin" align="center"> <img width="460" src="https://i.imgur.com/V1qgXKM.jpg"> </p>
 <br/>
-<br/>
+<br/> -->
 
 
 # KUBERNETES TOOLS MANAGEMENT
