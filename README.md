@@ -442,7 +442,7 @@ I've left the meme-web as an example so that you can use it as reference when de
 
 <br/>
 <br/>
-<p title="Kevin James" align="center"> <img width="460" src="https://i.imgur.com/ULcCyVx.jpg"> </p>
+<p title="Kevin James" align="center"> <img width="460" src="https://i.imgur.com/Stl0y81.jpg"> </p>
 <br/>
 <br/>
 
