@@ -1,4 +1,4 @@
-name: Build & deploy meme-web-frontend image
+name: meme-web-frontend build & deploy
 
 on:
   workflow_dispatch:
