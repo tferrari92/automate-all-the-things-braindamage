@@ -34,7 +34,6 @@ spec:
           title: Email
           type: string
           description: Email of the new user
-          # ui:field: EntityNamePicker
           ui:autofocus: true
         pictureURL:
           title: Profile picutre
@@ -75,16 +74,6 @@ spec:
           group: ${{ parameters.group }}
           pictureURL: ${{ parameters.pictureURL }}
 
-    # - id: append-new-user
-    #   name: Append new user to all-users.yaml
-    #   action: shell
-    #   input:
-    #     cmd: bash
-    #     args:
-    #       - -c
-    #       - |
-    #         echo "    - ./users/${{parameters.name | lower }}-${{parameters.lastName | lower }}.yaml" >> entities/all-users.yaml
-
     - id: publish
       name: Publish
       action: publish:github:pull-request
@@ -96,19 +85,9 @@ spec:
         description: |
           # New user: ${{parameters.name}} ${{parameters.lastName}}
         targetPath: backstage/entities/users
-        # targetPath: "" # Leave empty to use the root of the repo or specify if needed
-        # paths: 
-        #   - backstage/entities/users
-        #   - backstage/entities/all-users.yaml
+
         
   output:
     links:
       - url: ${{steps.publish.output.remoteUrl}}
         title: "Go to PR"
-      # - title: Repository
-      #   url: ${{ steps.publish.output.remoteUrl }}
-      # - title: Open in catalog
-      #   icon: catalog
-      #   entityRef: ${{ steps.register.output.entityRef }}
-
-
