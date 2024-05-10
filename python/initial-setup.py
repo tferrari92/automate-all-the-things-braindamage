@@ -82,7 +82,7 @@ print_gradually(
 github_username = input()
 
 print_gradually(
-    "Got it! In what AWS region will you be deploying your resources? (e.g. 'us-east-2'): ")
+    "Got it! In what AWS region will you be deploying your resources? (e.g. 'us-east-1'): ")
 aws_region = input()
 
 print_gradually("Good choice! We're almost done. What's your DockerHub username?: ")
