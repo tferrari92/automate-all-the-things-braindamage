@@ -396,7 +396,8 @@ It generates a Pull Request which includes a new User manifest. When merged, the
 Creates all the boilerplate files and directories in an existing repo for deploying a new Node.js service in Kubernetes:
 1. The application code directory and files, which will saved in [the application-code directory](/application-code/).
 2. The helm chart, which will be saved in [the helm-charts/systems directory](/helm-charts/systems/).
-3. The build and push GitHub workflow manifest, which will be saved [the .github/workflows directory](/.github/workflows/) (working with GitHub Workflows is out of the scope of this lab).
+3. The application.yaml files which will be saved in [the argo-cd/applications/systems/ directory](/argo-cd/applications/systems/).
+4. The build and deploy GitHub workflow manifest, which will be saved [the .github/workflows directory](/.github/workflows/) (working with GitHub Workflows is out of the scope of this lab).
 
 It generates a Pull Request which includes all these files al directories.
 </br>
@@ -405,7 +406,8 @@ It generates a Pull Request which includes all these files al directories.
 Creates all the boilerplate files and directories in an existing repo for deploying a new NGINX service in Kubernetes:
 1. The application code directory and files, which will saved in [the application-code directory](/application-code/).
 2. The helm chart, which will be saved in [the helm-charts/systems directory](/helm-charts/systems/).
-3. The build and push GitHub workflow manifest, which will be saved [the .github/workflows directory](/.github/workflows/) (working with GitHub Workflows is out of the scope of this lab).
+3. The application.yaml files which will be saved in [the argo-cd/applications/systems/ directory](/argo-cd/applications/systems/).
+4. The build and deploy GitHub workflow manifest, which will be saved [the .github/workflows directory](/.github/workflows/) (working with GitHub Workflows is out of the scope of this lab).
 
 It generates a Pull Request which includes all these files al directories.
 
@@ -442,7 +444,7 @@ I've left the meme-web as an example so that you can use it as reference when de
 
 <br/>
 <br/>
-<p title="Kevin James" align="center"> <img width="460" src="https://i.imgur.com/Stl0y81.jpg"> </p>
+<p title="Hard right" align="center"> <img width="460" src="https://i.imgur.com/Stl0y81.jpg"> </p>
 <br/>
 <br/>
 
