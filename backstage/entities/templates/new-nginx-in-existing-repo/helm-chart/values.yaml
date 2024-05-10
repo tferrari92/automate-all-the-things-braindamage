@@ -9,3 +9,4 @@ deployment:
     system: ${{ values.system }}
     service: ${{ values.service }}
     backstage.io/kubernetes-id: ${{ values.system }}-${{ values.service }}
+    istio: monitor
