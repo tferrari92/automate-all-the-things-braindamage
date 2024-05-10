@@ -90,6 +90,16 @@ spec:
           system: ${{ parameters.system }}
           service: ${{ parameters.service }}
 
+    - id: fetch-argocd-applications
+      name: Fetch ArgoCD application manifests
+      action: fetch:template
+      input:
+        url: ./argocd-applications
+        targetPath: argo-cd/applications/systems/${{ parameters.system }}/${{ parameters.service }}
+        values:
+          system: ${{ parameters.system }}
+          service: ${{ parameters.service }}
+
     - id: fetch-github-workflow
       name: Fetch GitHub Workflow
       action: fetch:template
@@ -114,9 +124,10 @@ spec:
           ${{ parameters.description if parameters.description }}
         targetPath: "" # Leave empty to use the root of the repo or specify if needed
         paths: 
-          - application-code/${{ parameters.system }}/${{ parameters.service }}
-          - helm-charts/systems/${{ parameters.system }}/${{parameters.service}}
-          - .github/workflows
+          # - application-code/${{ parameters.system }}/${{ parameters.service }}
+          # - helm-charts/systems/${{ parameters.system }}/${{parameters.service}}
+          # - argo-cd/applications/systems/${{ parameters.system }}/${{ parameters.service }}
+          # - .github/workflows
 
 
   output:
