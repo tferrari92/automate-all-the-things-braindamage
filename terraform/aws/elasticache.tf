@@ -5,7 +5,7 @@ resource "aws_elasticache_subnet_group" "elasticache-subnet-group" {
 
 
 resource "aws_elasticache_replication_group" "elasticache-replication-group-dev" {
-  replication_group_id          = "${var.project}-dev-elascache-rep-group"
+  replication_group_id          = "${var.system}-dev-elascache-rep-group"
   replication_group_description = "Redis cluster for DEV environment"
 
   node_type            = "cache.t4g.micro"
@@ -30,7 +30,7 @@ resource "aws_elasticache_replication_group" "elasticache-replication-group-dev"
 }
 
 resource "aws_elasticache_replication_group" "elasticache-replication-group-stage" {
-  replication_group_id          = "${var.project}-stage-elascache-rep-group"
+  replication_group_id          = "${var.system}-stage-elascache-rep-group"
   replication_group_description = "Redis cluster for STAGE environment"
 
   node_type            = "cache.t4g.micro"
@@ -55,7 +55,7 @@ resource "aws_elasticache_replication_group" "elasticache-replication-group-stag
 }
 
 resource "aws_elasticache_replication_group" "elasticache-replication-group-prod" {
-  replication_group_id          = "${var.project}-prod-elascache-rep-group"
+  replication_group_id          = "${var.system}-prod-elascache-rep-group"
   replication_group_description = "Redis cluster for PROD environment"
 
   node_type            = "cache.t4g.micro"
