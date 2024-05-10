@@ -34,7 +34,6 @@ jobs:
 
   deploy-dev:
     name: Update image tag for DEV environment
-    # if: ${{ success() }}
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
@@ -47,21 +46,20 @@ jobs:
 
       - name: Update tag in values-dev.yaml
         run: |
-          sed 's/tag:.*/tag: ${{github.run_number}}/g' helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-dev.yaml > helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-dev.temp
-          mv helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-dev.temp helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-dev.yaml
+          sed "s/tag:.*/tag: $GITHUB_RUN_NUMBER/g" helm-charts/systems/$SYSTEM/$SERVICE/environments/values-dev.yaml > helm-charts/systems/$SYSTEM/$SERVICE/environments/values-dev.temp
+          mv helm-charts/systems/$SYSTEM/$SERVICE/environments/values-dev.temp helm-charts/systems/$SYSTEM/$SERVICE/environments/values-dev.yaml
 
       - name: Commit changes to GitHub
         run: |
-          git config --global user.email "GitHubActions@Build&Deploy${{ env.SERVICE }}Workflow.com"
-          git config --global user.name "GitHub Actions - Build & Deploy ${{ env.SERVICE }} Workflow"
-          git add helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-dev.yaml 
-          git commit -m "${{ env.SERVICE }} image tag updated to ${{github.run_number}} by GitHub Actions"
+          git config --global user.email "GitHubActions@Build&Deploy$SERVICEWorkflow.com"
+          git config --global user.name "GitHub Actions - Build & Deploy $SERVICE Workflow"
+          git add helm-charts/systems/$SYSTEM/$SERVICE/environments/values-dev.yaml 
+          git commit -m "$SERVICE image tag updated to $GITHUB_RUN_NUMBER by GitHub Actions"
           git push
 
 
   deploy-stage:
     name: Update image tag for STAGE environment
-    # if: ${{ success() }}
     needs: deploy-dev
     runs-on: ubuntu-latest
     steps:
@@ -74,21 +72,20 @@ jobs:
 
       - name: Update tag in values-stage.yaml
         run: |
-          sed 's/tag:.*/tag: ${{github.run_number}}/g' helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-stage.yaml > helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-stage.temp
-          mv helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-stage.temp helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-stage.yaml
+          sed "s/tag:.*/tag: $GITHUB_RUN_NUMBER/g" helm-charts/systems/$SYSTEM/$SERVICE/environments/values-stage.yaml > helm-charts/systems/$SYSTEM/$SERVICE/environments/values-stage.temp
+          mv helm-charts/systems/$SYSTEM/$SERVICE/environments/values-stage.temp helm-charts/systems/$SYSTEM/$SERVICE/environments/values-stage.yaml
 
       - name: Commit changes to GitHub
         run: |
-          git config --global user.email "GitHubActions@Build&Deploy${{ env.SERVICE }}Workflow.com"
-          git config --global user.name "GitHub Actions - Build & Deploy ${{ env.SERVICE }} Workflow"
-          git add helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-stage.yaml 
-          git commit -m "${{ env.SERVICE }} image tag updated to ${{github.run_number}} by GitHub Actions"
+          git config --global user.email "GitHubActions@Build&Deploy$SERVICEWorkflow.com"
+          git config --global user.name "GitHub Actions - Build & Deploy $SERVICE Workflow"
+          git add helm-charts/systems/$SYSTEM/$SERVICE/environments/values-stage.yaml 
+          git commit -m "$SERVICE image tag updated to $GITHUB_RUN_NUMBER by GitHub Actions"
           git push
 
 
   deploy-prod:
     name: Update image tag for PROD environment
-    # if: ${{ success() }}
     needs: deploy-stage
 
     runs-on: ubuntu-latest
@@ -102,14 +99,15 @@ jobs:
 
       - name: Update tag in values-prod.yaml
         run: |
-          sed 's/tag:.*/tag: ${{github.run_number}}/g' helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-prod.yaml > helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-prod.temp
-          mv helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-prod.temp helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-prod.yaml
+          sed "s/tag:.*/tag: $GITHUB_RUN_NUMBER/g" helm-charts/systems/$SYSTEM/$SERVICE/environments/values-prod.yaml > helm-charts/systems/$SYSTEM/$SERVICE/environments/values-prod.temp
+          mv helm-charts/systems/$SYSTEM/$SERVICE/environments/values-prod.temp helm-charts/systems/$SYSTEM/$SERVICE/environments/values-prod.yaml
 
       - name: Commit changes to GitHub
         run: |
-          git config --global user.email "GitHubActions@Build&Deploy${{ env.SERVICE }}Workflow.com"
-          git config --global user.name "GitHub Actions - Build & Deploy ${{ env.SERVICE }} Workflow"
-          git add helm-charts/systems/${{ env.SYSTEM }}/${{ env.SERVICE }}/environments/values-prod.yaml 
-          git commit -m "${{ env.SERVICE }} image tag updated to ${{github.run_number}} by GitHub Actions"
+          git config --global user.email "GitHubActions@Build&Deploy$SERVICEWorkflow.com"
+          git config --global user.name "GitHub Actions - Build & Deploy $SERVICE Workflow"
+          git add helm-charts/systems/$SYSTEM/$SERVICE/environments/values-prod.yaml 
+          git commit -m "$SERVICE image tag updated to $GITHUB_RUN_NUMBER by GitHub Actions"
           git push
+          
           
