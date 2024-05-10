@@ -40,9 +40,6 @@ spec:
           items:
             type: string
           description: Tags associated with the system
-          # ui:field: TagsPicker
-          # ui:options:
-          #   freeSolo: true  
 
     - title: Choose a location
       required:
@@ -86,4 +83,3 @@ spec:
     links:
       - url: ${{steps.publish.output.remoteUrl}}
         title: "Go to PR"
-
