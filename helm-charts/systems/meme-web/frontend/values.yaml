@@ -1,4 +1,4 @@
-system: meme-web # This value was modified by the initial-setup python script
+system: meme-web 
 
 service: frontend
 
@@ -10,10 +10,9 @@ deployment:
   image:
     repository: AATT_DOCKERHUB_USERNAME/meme-web-frontend # This value was modified by the initial-setup python script
   labels:
-    # app: meme-web-frontend
+    system: meme-web 
     service: frontend
-    system: meme-web # This value was modified by the initial-setup python script
-    backstage.io/kubernetes-id: meme-web-frontend # This value was modified by the initial-setup python script
+    backstage.io/kubernetes-id: meme-web-frontend 
     istio: monitor
   
 
