@@ -431,7 +431,13 @@ Also, we will always have the spec.children value of Group manifests as an empty
 
 ## Meme-Web
 
-I've left the meme-web as an example so that you can use it as reference when deploying your new systems, users, groups, services, etc.
+I've left the meme-web as an example so that you can use it as reference when deploying your new systems, users, groups, services, etc. These are some of the files you might want to check out:
+- [component](/application-code/meme-web/backend/catalog-info.yaml)
+- [resource](/application-code/meme-web/backend/api-info.yaml)
+- [api](/application-code/meme-web/backend/api-info.yaml)
+- [system](/backstage/entities/systems/meme-web.yaml)
+- [group](/backstage/entities/groups/meme-web-team.yaml)
+- [user](/backstage/entities/users/geralt.yaml)
 
 
 <br/>
