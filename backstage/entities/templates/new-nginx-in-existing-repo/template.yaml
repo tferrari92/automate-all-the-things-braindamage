@@ -124,9 +124,10 @@ spec:
           ${{ parameters.description if parameters.description }}
         targetPath: "" # Leave empty to use the root of the repo or specify if needed
         # paths: 
-        #   - application-code/${{ parameters.system }}/${{ parameters.service }}
-        #   - helm-charts/systems/${{ parameters.system }}/${{parameters.service}}
-        #   - .github/workflows
+          # - application-code/${{ parameters.system }}/${{ parameters.service }}
+          # - helm-charts/systems/${{ parameters.system }}/${{parameters.service}}
+          # - argo-cd/applications/systems/${{ parameters.system }}/${{ parameters.service }}
+          # - .github/workflows
 
 
   output:
