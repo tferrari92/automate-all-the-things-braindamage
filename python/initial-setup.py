@@ -126,6 +126,7 @@ def search_and_replace(directory, replacements):
                              '04-destroy-all-the-things.yaml',
 
                              # application-code
+                             'catalog-info.yaml',
 
                              # argo-cd
                              'application-dev.yaml',
@@ -149,6 +150,7 @@ def search_and_replace(directory, replacements):
 
                              # backstage
                              'build-push-image.sh',
+                             'app-config.yaml',
                             
                              # helm-charts
                              'Chart.yaml',
