@@ -63,6 +63,7 @@ This Braindamage Edition builds upon the [Overload Edition](https://github.com/t
     - [Plugins I've added](#plugins-ive-added)
     - [Templates I've created](#templates-ive-created)
     - [My arbitrary rules](#my-arbitrary-rules)
+  - [Meme-Web](#meme-web)
 - [AWS Infrastructure Deployment Pipeline](#aws-infrastructure-deployment-pipeline)
   - [Description](#description)
   - [Instructions](#instructions)
@@ -425,6 +426,13 @@ I decided that user and group hierarchy should be defined from the bottom up. To
 So we will not define the members of a group in the Group manifest, but we will define the group a user belongs to in the spec.memberOf of the User manifest. 
 
 Also, we will always have the spec.children value of Group manifests as an empty array and the spec.parent value filled with whoever the parent group of that group is. If it has no parent, the value of spec.parent should be "root".
+
+</br>
+
+## Meme-Web
+
+I've left the meme-web as an example so that you can use it as reference when deploying your new systems, users, groups, services, etc.
+
 
 <br/>
 <br/>
