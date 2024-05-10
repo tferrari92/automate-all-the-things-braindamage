@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: meme-web-redis-subteam
+  title: meme-web redis subteam
+  description: Responsible for maintaining and developing the redis database of meme-web
+  tags:
+    - database
+    - redis
+spec:
+  type: team
+  children: []
+  parent: meme-web-team
+  # members:
+  #   - masterchief
+  profile:
+    email: meme-web-redis-subteam@example.com
+    # slack: 

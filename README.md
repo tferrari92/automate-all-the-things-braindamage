@@ -22,25 +22,21 @@
 
 # **BRAINDAMAGE EDITION**
 
-This Braindamage Edition builds upon the [Insane Edition](https://github.com/tferrari92/automate-all-the-things-insane).
+This Braindamage Edition builds upon the [Overload Edition](https://github.com/tferrari92/automate-all-the-things-overload).
 
 ### New features:
 
-- ArgoCD Sync Waves
-- Sealed Secrets
-- Backend code instrumented with OpenTelemetry
-- Traces collection and visualization Jaeger
-- Removed the use of Canary deployments in Dev environment
-
+- Developer Portal with Backstage.io
 
 ### Versions in order of complexity:
 
 1. [Regular Edition](https://github.com/tferrari92/automate-all-the-things)
 2. [Hardcore Edition](https://github.com/tferrari92/automate-all-the-things-hardcore)
 3. [Insane Edition](https://github.com/tferrari92/automate-all-the-things-insane)
-4. [Braindamage Edition](https://github.com/tferrari92/automate-all-the-things-braindamage)
-5. [Transcendence Edition](https://github.com/tferrari92/automate-all-the-things-transcendence)
-6. [Nirvana Edition](https://github.com/tferrari92/automate-all-the-things-nirvana)
+4. [Overload Edition](https://github.com/tferrari92/automate-all-the-things-overload)
+5. [Braindamage Edition](https://github.com/tferrari92/automate-all-the-things-braindamage)
+7. [Nirvana Edition](https://github.com/tferrari92/automate-all-the-things-nirvana)
+<!-- 6. [Transcendence Edition](https://github.com/tferrari92/automate-all-the-things-transcendence)  -->
 
 ### Spin-offs:
 - [Backstage Minikube Lab](https://github.com/tferrari92/backstage-minikube-lab)
@@ -55,14 +51,18 @@ This Braindamage Edition builds upon the [Insane Edition](https://github.com/tfe
   - [Tools we'll be using](#tools-well-be-using)
   - [Disclaimer](#disclaimer)
 - [Local Setup](#local-setup)
-- [Azure DevOps Setup](#azure-devops-setup)
-  - [Create project](#create-project)
-  - [Install required plugins](#install-required-plugins)
+- [GitHub Actions Setup](#github-actions-setup)
   - [Get your AWS keys](#get-your-aws-keys)
-  - [Create AWS service connection](#create-aws-service-connection)
-  - [Create DockerHub service connection](#create-dockerhub-service-connection)
-  - [Create AWS-keys variable group](#create-aws-keys-variable-group)
-  - [Create an Azure self-hosted agent](#optional-create-an-azure-self-hosted-agent)
+  - [Create secrets for GitHub Actions](#create-secrets-for-github-actions)
+- [Backstage.io](#backstageio)
+  - [Prerequisites](#prerequisites)
+  - [Initial setup](#create-secrets-for-github-actions)
+   - [Get GitHub PAT](#get-github-pat-personal-access-token)
+  - [Run Backstage locally](#run-backstage-locally)
+  - [Customising Backstage](#customising-backstage)
+    - [Plugins I've added](#plugins-ive-added)
+    - [Templates I've created](#templates-ive-created)
+    - [My arbitrary rules](#my-arbitrary-rules)
 - [AWS Infrastructure Deployment Pipeline](#aws-infrastructure-deployment-pipeline)
   - [Description](#description)
   - [Instructions](#instructions)
@@ -86,7 +86,6 @@ This Braindamage Edition builds upon the [Insane Edition](https://github.com/tfe
 - [Kubernetes Tools Management](#kubernetes-tools-management)
   - [Description](#description-5)
   - [Instructions](#instructions-5)
-- [Traces With OpenTelemetry and Jaeger](#traces-with-opentelemetry-and-jaeger)
 - [Destroy All The Things Pipeline](#destroy-all-the-things-pipeline)
   - [Description](#description-6)
   - [Instructions](#instructions-6)
@@ -114,7 +113,6 @@ Here's my attempt at making the world a better place. People in the future will 
 - [Active GitHub account](https://github.com/)
 - [Active DockerHub account](https://hub.docker.com/)
 - [Active AWS account](https://aws.amazon.com/)
-- [Active Azure DevOps account](https://azure.microsoft.com/en-us/free/)
 
 <br/>
 
@@ -144,7 +142,7 @@ Our app is a very simple static website, but I'm not spoiling it for you. You'll
 - Infrastructure as Code -> Terraform
 - Containerization -> Docker
 - Container Orchestration -> Kubernetes
-- Continuous Integration -> Azure DevOps
+- Continuous Integration -> GitHub Actions
 - Continuous Deployment -> Helm & ArgoCD
 - Scripting -> Python
 - Monitoring -> Prometheus
@@ -156,16 +154,17 @@ Our app is a very simple static website, but I'm not spoiling it for you. You'll
 - Kubernetes Secrets Encryption -> Bitnami Sealed Secrets
 - Code Instrumentation -> OpenTelemetry
 - Tracing -> Jaeger
+- Internal Developer Platform -> Backstage.io
 
 <br/>
 
-<p title="Logos Banner" align="center"> <img  src="https://i.imgur.com/PLLfOmY.png"> </p>
+<p title="Logos Banner" align="center"> <img  src="https://i.imgur.com/mt4dNO3.png"> </p>
 
 <br/>
 
 ## Disclaimer
 
-This is not a free project, it will cost you between $1 US dollars and $10 depending on how long you run the resources for. That's assuming you run them for a few hours tops, not days. Always remember to run the [destroy-all-the-things pipeline](/azure-devops/05-destroy-all-the-things.yml) when you are done.
+This is not a free project, it will cost you between $1 US dollars and $10 depending on how long you run the resources for. That's assuming you run them for a few hours tops, not days. Always remember to run the [destroy-all-the-things pipeline](/.github/workflows/06-destroy-all-the-things.yaml) when you are done.
 
 Some things could have been further automated but I prioritized modularization and separation of concerns.<br>
 
@@ -215,7 +214,7 @@ git commit -m "customized repo"
 git push
 ```
 
-5. Awesome! You can now proceed with the Azure DevOps setup.
+5. Awesome! You can now proceed with the GitHub Actions setup.
 
 <br/>
 <br/>
@@ -223,31 +222,14 @@ git push
 <br/>
 <br/>
 
-# **AZURE DEVOPS SETUP**
 
-Before creating our pipelines we need to get a few things set up:<br>
+# **GITHUB ACTIONS SETUP**
 
-## Create project
-
-1. Sign in [Azure DevOps](https://dev.azure.com/).
-2. Go to "New project" on the top-right.
-3. Write the name for your project and under "Visibility" select "Private".
-4. Click "Create".
-
-<br/>
-
-## Install required plugins
-
-These plugins are required for the pipelines we'll be creating. Click on "Get it free", select your organization and then click "Install".
-
-1. Install [Terraform Tasks plugin](https://marketplace.visualstudio.com/items?itemName=JasonBJohnson.azure-pipelines-tasks-terraform) for Azure Pipelines
-1. Install [AWS Toolkit plugin](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-vsts-tools) for Azure Pipelines
-
-<br/>
+Before running our pipelines we need to get a few things set up<br>
 
 ## Get your AWS keys
 
-These will be required for Azure DevOps to connect to your AWS account.
+These will be required for our workflows to connect to your AWS account.
 
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
 2. On the search bar look up "IAM".
@@ -263,65 +245,19 @@ These will be required for Azure DevOps to connect to your AWS account.
 
 <br/>
 
-## Create AWS service connection
+## Create secrets for GitHub Actions
 
-This service connection is required for our Azure DevOps pipelines to interact with AWS.
+1. Go to the Settings tab of your GitHub repo.
+2. On the left-side menu click "Secrets and variables" and then on "Actions".
+3. Under "Repository secrets" click on "New repository secret".
+<p title="Guide" align="center"> <img width="700" src="https://i.imgur.com/656voMj.png"> </p>
 
-1. Go back to Azure DevOps and open your project.
-2. Go to Project settings on the left side menu (bottom-left corner).
-3. On the left side menu, under "Pipelines", select "Service connections".
-4. Click on "Create service connection".
-5. Select AWS, click "Next".
-6. Paste your Access Key ID and Secret Access Key.
-7. Under "Service connection name", write "aws".
-8. Select the "Grant access permission to all pipelines" option.
-9. Save.
-
-<br/>
-
-## Create DockerHub service connection
-
-This service connection is required for our Azure DevOps pipelines to be able to push images to your DockerHub registry.
-
-1. While on the "Service connections" screen, click on "New service connection" on the top-right.
-2. Select "Docker Registry", click "Next".
-3. Under "Registry type" select "Docker Hub".
-4. Input your Docker ID and Password.
-5. Under "Service connection name", write "dockerhub".
-6. Select the "Grant access permission to all pipelines" option.
-7. Click on "Verify and save".
-
-<br/>
-
-## Create AWS keys variable group
-
-These are needed for Terraform to be able to deploy our AWS infrastructure.
-
-1. On the left side menu under "Pipelines" go to "Library"
-2. Click on "+ Variable group".
-3. Under "Variable group name" write "aws-keys".
-4. Add the following variables pasting on the "Value" field your AWS keys:
-
-- aws_access_key_id
-- aws_secret_access_key
-
-5. Click on the lock icon on each variable.
-6. Click on "Save".
-7. Click on "Pipeline permissions" and give it "Open access". This means all our pipelines will be able to use these variables.
-<p title="Guide" align="center"> <img width="700" src="https://i.imgur.com/aMzTx49.jpg"> </p>
-
-<br/>
-
-## (Optional) Create an Azure self-hosted agent
-
-**If you have a hosted parallelism, you can skip this step.**<br/>
-
-A hosted parallelism basically means that Azure will spin up a server in which to run your pipelines. You can purchase one or you can request a free parallelism by filling out [this form](https://aka.ms/azpipelines-parallelism-request).
-
-If you don't have a hosted parallelism, you will have to run the pipeline in a **self-hosted agent**.
-This means you'll install an Azure DevOps Agent on your local machine, which will receive and execute the pipeline jobs.
-
-To install a self-hosted agent on your machine, you can follow the official documentation [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser#install).
+4. Under "Name" write "AWS_ACCESS_KEY_ID" and under "Secret" paste the corresponding value. 
+5. Click "Add secret" to save.
+6. Repeat the process for:
+- AWS_SECRET_ACCESS_KEY
+- DOCKER_USERNAME
+- DOCKER_PASSWORD
 
 <br/>
 <br/>
@@ -334,13 +270,176 @@ To install a self-hosted agent on your machine, you can follow the official docu
 <br/>
 <br/>
 
+# BACKSTAGE.IO
+
+Before deploying our infra, let's explore Backstage locally.
+
+Backstage is a framework for creating developer portals. This developer portal should act as a centralized hub for your organization, providing access to documentation, infrastructure, tooling, and code standards. It gives developers everything they need to create and manage their projects in a consistent and standardized manner. If you are new to Backstage, I invite you to read [this brilliant series of articles](https://www.kosli.com/blog/evaluating-backstage-1-why-backstage/) by Alexandre Couedelo.
+
+If you want to test Backstage out before you start spending money on AWS, I suggest you try out my [Backstage Minikube Lab](https://github.com/tferrari92/backstage-minikube-lab).
+
+</br>
+
+## Prerequisites
+- nodejs installed
+- nvm installed
+- yarn installed
+
+</br>
+
+## Initial setup
+Before deploying Backstage in a EKS, we need to build it locally.
+
+`cd` into my-backstage directory
+```bash
+cd backstage/my-backstage/
+```
+
+Make sure you are using Node.js version 18
+```bash
+nvm install 18
+nvm use 18
+nvm alias default 18
+```
+
+
+Make sure you are using Yarn version 1.22.19
+```bash
+yarn set version 1.22.19
+yarn --version
+```
+</br>
+
+### Get GitHub PAT (Personal Access Token)
+
+Navigate to the GitHub PAT creation page. Select "Generate new token (classic)". 
+
+Choose a name and a value for expiration. Under scopes select "repo" and "workflow". It should look something like this:
+
+<p title="GitHub Token" align="center"> <<img width="650" src="https://i.imgur.com/zTn7gDI.png"> </p>
+
+Click Generate token. Store the token somewhere safe.
+
+</br>
+
+## Run Backstage locally
+Everything's ready to start playing with Backstage.
+
+Create env var for your GitHub token
+```bash
+export GITHUB_TOKEN=<your-github-token>
+```
+
+Then run
+```bash
+yarn install
+yarn tsc
+yarn dev
+```
+
+Open your browser and go to localhost:3000. You should see the Backstage web UI.
+
+Every time you make changes to the Backstage code, it's recommended you test it by running it locally with "yarn dev" like you just did. This will be much faster that testing every change in EKS.
+
+</br>
+
+## Customising Backstage
+Before deploying our infra, lets go over some things you'll find in this Backstage deployment.
+
+Backstage is designed to be flexible and allow every organization to adapt it to their own needs. It is not a black-box application where you install plugins; rather, you maintain your own source code and can modify it as needed.
+
+I've already added some custom stuff to the default Backstage installation that I think are essential. 
+
+</br>
+
+### Plugins I've added
+
+#### - Kubernetes plugin
+The [Kubernetes plugin](https://backstage.io/docs/features/kubernetes/) in Backstage is a tool that's designed around the needs of service owners, not cluster admins. Now developers can easily check the health of their services no matter how or where those services are deployed — whether it's on a local host for testing or in production on dozens of clusters around the world.
+
+It will elevate the visibility of errors where identified, and provide drill down about the deployments, pods, and other objects for a service.
+</br>
+
+#### - GitHub Discovery plugin 
+The [GitHub Discovery plugin](https://backstage.io/docs/integrations/github/discovery) automatically discovers catalog entities within a GitHub organization. The provider will crawl the GitHub organization and register entities matching the configured path. This can be useful as an alternative to static locations or manually adding things to the catalog. This is the preferred method for ingesting entities into the catalog.
+
+I've installed it without events support. Updates to the catalog will rely on periodic scanning rather than real-time updates.
+
+You can check the automatic discovery configuration under catalog.providers.github in the [app-config.yaml](/backstage/my-backstage/app-config.yaml) and [app-config.production.yaml](/backstage/my-backstage/app-config.production.yaml) files.
+
+**IMPORTANT**: We use [app-config.yaml](/backstage/my-backstage/app-config.yaml) for local testing (when running `yarn dev`) and [app-config.production.yaml](/backstage/my-backstage/app-config.production.yaml) when deploying to Minikube.
+
+</br>
+
+### Templates I've created
+
+#### - New Backstage System
+Creates a new Backstage System with the provided information. A System in Backstage is a collection of entities (services, resources, APIs, etc.) that cooperate to perform a some function. For example, we will have a System called "my-app" that includes the my-app-frontend service, the my-app-backend service, the my-app-redis database and the my-app-backend API.
+
+It generates a Pull Request which includes a new System manifest. When merged, the System catalog entity will be automatically added to the Backstage catalog by the GitHub Discovery plugin.
+</br>
+
+#### - New Backstage Group
+Creates a new Backstage group with the provided information. 
+
+It generates a Pull Request which includes a new Group manifest. When merged, the Group catalog entity will be automatically added to the Backstage catalog by the GitHub Discovery plugin.
+</br>
+
+#### - New Backstage User
+Creates a new Backstage user with the provided information. 
+
+It generates a Pull Request which includes a new User manifest. When merged, the User catalog entity will be automatically added to the Backstage catalog by the GitHub Discovery plugin.
+</br>
+
+#### - New Node.js in existing repo
+Creates all the boilerplate files and directories in an existing repo for deploying a new Node.js service in Kubernetes:
+1. The application code directory and files, which will saved in [the application-code directory](/application-code/).
+2. The helm chart, which will be saved in [the helm-charts/systems directory](/helm-charts/systems/).
+3. The build and push GitHub workflow manifest, which will be saved [the .github/workflows directory](/.github/workflows/) (working with GitHub Workflows is out of the scope of this lab).
+
+It generates a Pull Request which includes all these files al directories.
+</br>
+
+#### - New NGINX in existing repo
+Creates all the boilerplate files and directories in an existing repo for deploying a new NGINX service in Kubernetes:
+1. The application code directory and files, which will saved in [the application-code directory](/application-code/).
+2. The helm chart, which will be saved in [the helm-charts/systems directory](/helm-charts/systems/).
+3. The build and push GitHub workflow manifest, which will be saved [the .github/workflows directory](/.github/workflows/) (working with GitHub Workflows is out of the scope of this lab).
+
+It generates a Pull Request which includes all these files al directories.
+
+</br>
+
+### My Arbitrary Rules
+
+#### - App-config management 
+The app-config is the file that defines the Backstage configuration. You will find three instances of app-config:
+1. [The app-config.yaml file](/backstage/my-backstage/app-config.yaml): This is the config that will be used for development and testing purposes when running locally with `yarn dev` command.
+2. [The app-config.production.yaml file](/backstage/my-backstage/app-config.yaml): This is the config that will be used for building the Docker image that will be deployed in Minikube. You will notice that it's missing the catalog configuration. That's because the catalog configuration will be passed in through a ConfigMap.
+3. [The helm chart values-custom.yaml file](/helm-charts/infra/backstage/values-custom.yaml): Since the catalog configuration is something that might need to be modified more often, I decided it should be specified in a ConfigMap and not hard coded into the Docker image. You can find the catalog configuration in the values-custom.yaml file of the Backstage helm chart. Helm will create a ConfigMap with these values and pass it in to the Backstage pod at the time of creation.
+</br>
+
+#### - Users and groups hierarchy
+I decided that user and group hierarchy should be defined from the bottom up. To me, it makes more sense that childs should keep track of their parents than parents of their childs.
+
+So we will not define the members of a group in the Group manifest, but we will define the group a user belongs to in the spec.memberOf of the User manifest. 
+
+Also, we will always have the spec.children value of Group manifests as an empty array and the spec.parent value filled with whoever the parent group of that group is. If it has no parent, the value of spec.parent should be "root".
+
+<br/>
+<br/>
+<p title="Kevin James" align="center"> <img width="460" src="https://i.imgur.com/ULcCyVx.jpg"> </p>
+<br/>
+<br/>
+
+
 # AWS INFRASTRUCTURE DEPLOYMENT PIPELINE
 
 ## Description
 
 Our first pipeline, the one that will provide us with all the necessary infrastructure.
 
-What does this pipeline do? If you take a look at the [00-deploy-infra.yml](azure-devops/00-deploy-infra.yml) file, you'll see that the first thing we do is use the Terraform plugin we previously installed to deploy a S3 Bucket and DynamoDB table. These two resources will allow us to store our terraform state remotely and give it locking functionality.<br/>
+What does this pipeline do? If you take a look at the [01-deploy-infra.yml](/.github/workflows/01-deploy-infra.yaml) file, you'll see that the first thing we do is use the Terraform plugin we previously installed to deploy a S3 Bucket and DynamoDB table. These two resources will allow us to store our terraform state remotely and give it locking functionality.<br/>
 
 Why do we need to store our tf state remotely and locking it? Well, this is probably not necessary for this exercise but it's a best practice when working on a team.<br>
 Storing it remotely means that everyone on the team can access and work with the same state file, and locking it means that only one person can access it at a time, this prevents state conflicts.
@@ -369,7 +468,7 @@ resource "aws_instance" "ec2_instance" {
 
 Commit the changes and run the pipeline again. The backend deployment step will fail, so the pipeline will finish with a warning, you can ignore it.
 
-The pipeline will also modify the [/helm/my-app/backend/environments](helm/my-app/backend/environments) files on the repo. It will get the endpoints for each ElastiCache DB from terraform outputs and include them in the values of each environment.
+The pipeline will also modify the [helm-charts/systems/my-app/backend/environments](/helm-charts/systems/my-app/backend/environments) files on the repo. It will get the endpoints for each ElastiCache DB from terraform outputs and include them in the values of each environment.
 
 Oh and lastly... it will export an artifact with the instructions on how to connect to the EC2 instance.
 
@@ -377,29 +476,10 @@ Oh and lastly... it will export an artifact with the instructions on how to conn
 
 ## Instructions
 
-1. On your Azure DevOps project, go to "Pipelines" on the left side menu.
-2. Select "Pipelines" under "Pipelines" on the left side menu.
-3. Click on "Create Pipeline".
-4. Select "Github".
-5. You might get a screen to authorize Azure Pipelines to access your GitHub account, if so, go ahead and click the green button.
-6. Select the repo, it should be "your-github-username/automate-all-the-things-braindamage"
-7. You might also get a screen to install the Azure Pipelines App on your GitHub account, if so, go ahead and click the green button and follow the instructions.
-8. Select "Existing Azure Pipelines YAML file".
-9. Under "Branch" select "main" and under "Path" select "/azure-devops/00-deploy-infra.yml". Click "Continue".
-10. _If you have hosted parallelism skip to point 11_. **If you DON'T have a hosted parallelism**, you need to tell Azure DevOps to use your [**self-hosted agent**](#optional-create-an-azure-self-hosted-agent). In order to do this, you'll need to go to the repo and modify the [00-deploy-infra.yml file](azure-devops/00-deploy-infra.yml).<br>
-    Under "pool" you need to edit it so that it looks like this:
-
-```yaml
-pool:
-  # vmImage: 'ubuntu-latest'
-  name: <agent-pool-name> # Insert here the name of the agent pool you created
-  demands:
-    - agent.name -equals <agent-name> # Insert here the name of the agent you created
-```
-
-11. Click on "Run".
-12. When it's done, the EC2 instance public IP address will be exported as an artifact. You'll find it in the pipeline run screen. Download it to see the instructions to access the instance.
-<p title="Guide" align="center"> <img width="700" src="https://i.imgur.com/UtZyCCe.png"> </p>
+1. On your GitHub repo, go to the "Actions" tab.
+2. Click on the "01-Deploy AWS infrastructure" workflow.
+3. Click on "Run workflow" (Use workflow from Branch: main).
+4. When it's finished, the EC2 instance public IP address will be exported as an artifact. You'll find it in the workflow run screen under "Artifacts". Download it to see the instructions to access the instance.
 
 <br/>
 <br/>
@@ -425,7 +505,7 @@ The sequence will go like this:
 
 **IMPORTANT**:<br>
 - I chose these numbers arbitrarily, feel free to change them or raise an issue if you see room for improvement.
-- By default ArgoCD is not able to apply Sync Waves for manifests of type Application. I had to do [this](https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/1.7-1.8/#health-assessment-of-argoprojioapplication-crd-has-been-removed) to make it work. You can see it in the [ArgoCD Helm chart custom values file](helm/infra/argo-cd/values-custom.yaml).
+- By default ArgoCD is not able to apply Sync Waves for manifests of type Application. I had to do [this](https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/1.7-1.8/#health-assessment-of-argoprojioapplication-crd-has-been-removed) to make it work. You can see it in the [ArgoCD Helm chart custom values file](/helm-charts/infra/argo-cd/values-custom.yaml).
 - Before running the Destroy All The Things pipeline, make sure all applications are healthy, the implementation of Sync Waves will mess with applications deletion if they are not healthy.
 
 Here are the specific numbers:
@@ -440,7 +520,7 @@ Here are the specific numbers:
 - -4 Istio Base / Jaegger / Loki / Sealed-Secrets
 - -3 Istiod / Grafana 
 - -2 Istio Gateway / Flagger
-- -1 Kiali / Flagger Load-Tester
+- -1 Kiali / Flagger Load-Tester / Backstage
 - 0 Backends
 - 1 Frontends
 
@@ -455,7 +535,7 @@ Here are the specific numbers:
 
 <br/>
 <br/>
-<p title="Feeling of power" align="center"> <img width="460" src="https://i.imgur.com/o4LuRu7.jpg"> </p>
+<p title="Kill chain" align="center"> <img width="460" src="https://i.imgur.com/KcSXPER.jpg"> </p><br/><br/><br/>
 <br/>
 <br/>
 
@@ -465,14 +545,14 @@ Here are the specific numbers:
 
 We won't go into what ArgoCD is, for that you have [this video](https://youtu.be/MeU5_k9ssrs) by the #1 DevOps youtuber, Nana from [TechWorld with Nana](https://www.youtube.com/@TechWorldwithNana).
 
-This pipeline will use the [ArgoCD Helm Chart](helm/argo-cd/) in our repo to deploy ArgoCD into our EKS.<br>
+This pipeline will use the [ArgoCD Helm Chart](/helm-charts/infra/argo-cd/) in our repo to deploy ArgoCD into our EKS.<br>
 The first thing it will do is run the necessary tasks to connect to our the cluster. After this, ArgoCD will be installed, along with its Ingress.
 
-It will then create the necessary resources for ArgoCD to be self-managed and to apply the [App of Apps pattern](https://youtu.be/2pvGL0zqf9o). ArgoCD will be watching the helm charts in the [helm](helm) directory in our repo, it will automatically create all the resources it finds and apply any future changes me make there. The [helm/infra](helm/my-app) and [helm/my-app](helm/my-app) directories simulates what would be our K8S infrastructure repositories would be.
+It will then create the necessary resources for ArgoCD to be self-managed and to apply the [App of Apps pattern](https://youtu.be/2pvGL0zqf9o). ArgoCD will be watching the helm charts in the [helm-charts](/helm-charts) directory in our repo, it will automatically create all the resources it finds and apply any future changes me make there. The [helm-charts/infra](/helm-charts/systems/my-app) and [helm-charts/systems/my-app](/helm-charts/systems/my-app) directories simulate what would be our K8S infrastructure repositories would be.
 
 If you want to know more about Helm, [here's another Nana video](https://youtu.be/-ykwb1d0DXU).
 
-Following up, it will get the Istio Gateway endpoint and put it into the [frontend values file](helm/my-app/frontend/values.yaml). It will also export the endpoint for each environment as an artifact.
+Following up, it will get the Istio Gateway endpoint and put it into the [frontend values file](/helm-charts/systems/my-app/frontend/values.yaml). It will also export the endpoint for each environment as an artifact.
 
 Finally the pipeline will get the ArgoCD web UI URL and admin account password and export them as an artifact too. You might need to wait a few seconds for the URL to be active, this is because an AWS Load Balancer takes a little time to be deployed.
 
@@ -480,18 +560,11 @@ Finally the pipeline will get the ArgoCD web UI URL and admin account password a
 
 ## Instructions
 
-1. Go to "Pipelines" under "Pipelines" on the left side menu.
-2. Click on "New pipeline".
-3. Select "GitHub".
-4. Select the repo, it should be "your-github-username/automate-all-the-things-braindamage"
-5. Select "Existing Azure Pipelines YAML file".
-6. Under "Branch" select "main" and under "Path" select "/azure-devops/01-deploy-argocd.yml". Click "Continue".
-7. If you DON'T have a hosted parallelism, you'll need to do the same thing as in point 10 from the [infrastructure deployment pipeline](#instructions).
-8. Click on "Run".
-9. When it's done, the endpoints and ArgoCD access files will be exported as artifacts. You'll find them in the pipeline run screen. Download them to see the ArgoCD URL and credentials, and the frontend endpoints.
-<p title="Guide" align="center"> <img width="700" src="https://i.imgur.com/UtZyCCe.png"> </p>
-
-10. You can now access the ArgoCD UI, if it's not ready just hit refresh every few seconds.
+1. On your GitHub repo, go to the "Actions" tab.
+2. Click on the "02-Deploy ArgoCD" workflow.
+3. Click on "Run workflow" (Use workflow from Branch: main).
+4. When it's finished, the frontend endpoints and ArgoCD access files will be exported as artifacts. You'll find them in the workflow run screen under "Artifacts". Download them to see the ArgoCD URL and credentials, and the frontend endpoints.
+5. You can now access the ArgoCD UI, if it's not ready just hit refresh every few seconds.
 
 <br/>
 <br/>
@@ -508,20 +581,22 @@ Up until now, we have been leaving our Kubernetes secrtes exposed in our repo. A
 
 From now on, we will encrypt them, and for this we will use Bitnami Sealed Secrets. As always, I'm not going into details on how the tool works, but you can check out [this video](https://youtu.be/wWMJCY2E0d4?si=zX93I7hji-6w7hnX) from KodeKloud.
 
-You could easily encrypt the secrets yourselves using the kubeseal CLI tool, but I made a pipeline to make it easier. Before running, the pipeline will require you to introduce the Redis passwords for each environment. The pipeline will then install the Kubeseal CLI tool and with it, it will generate Sealed Secrets and save the values of the encrypted passwords to the [values files of each environment](helm/my-app/backend/environments/). The [sealed secret manifest](helm/my-app/backend/templates/redis-sealed-secret.yaml) will use these values to create the SealedSecret objects in the cluster.
+You could easily encrypt the secrets yourselves using the kubeseal CLI tool, but I made a pipeline to make it easier. Before running, the pipeline will require you to introduce the Redis passwords for each environment. The pipeline will then install the Kubeseal CLI tool and with it, it will generate Sealed Secrets and save the values of the encrypted passwords to the [values files of each environment](/helm-charts/systems/my-app/backend/environments/). The [sealed secret manifest](/helm-charts/systems/my-app/backend/templates/redis-sealed-secret.yaml) will use these values to create the SealedSecret objects in the cluster.
+
+Same will be done for the GitHub token secret that Backstage will use.
 
 <br/>
 
 ## Instructions
 
-1. Go to "Pipelines" under "Pipelines" on the left side menu.
-2. Click on "New pipeline".
-3. Select "GitHub".
-4. Select the repo, it should be "your-github-username/automate-all-the-things-braindamage"
-5. Select "Existing Azure Pipelines YAML file".
-6. Under "Branch" select "main" and under "Path" select "/azure-devops/02-sealed-secret-generator.yml". Click "Continue".
-7. If you DON'T have a hosted parallelism, you'll need to do the same thing as in point 10 from the [infrastructure deployment pipeline](#instructions).
-8. Click on "Run". It will fail the first time because you haven't passed in the the values, just run it again.
+1. On your GitHub repo, go to the "Actions" tab.
+2. Click on the "03-Sealed secret generator" workflow.
+3. Click on "Run workflow".
+4. Complete the empty fields. Passwords are:
+- automate-all-the-things-dev
+- automate-all-the-things-stage
+- automate-all-the-things-prod
+5. Click on "Run workflow".
 
 
 <br/>
@@ -537,39 +612,34 @@ You could easily encrypt the secrets yourselves using the kubeseal CLI tool, but
 
 Our app is made of two microservices (backend and frontend) and a database. Let's start with the backend.
 
-The [/my-app/backend directory](my-app/backend) on the repo is meant to represent the backend microservice application code repository. Here you'll find the code files and the corresponding Dockerfile for the backend service.
+The [application-code/my-app/backend directory](/application-code/my-app/backend) on the repo is meant to represent the backend microservice application code repository. Here you'll find the code files and the corresponding Dockerfile for the backend service.
 
 There's four stages on this pipeline:
 
 On the Build stage we will use Docker to build a container image from the Dockerfile, tag it with the number of the pipeline run and push it to your DockerHub registry.
 
-On the Deploy Dev stage, we will checkout the repo and modify the [helm/my-app/backend/environments/values-dev.yaml file](helm/my-app/backend/environments/values-dev.yaml) and push the change to GitHub. [But why?](https://i.gifer.com/2Gg.gif)<br>
+On the Deploy Dev stage, we will checkout the repo and modify the [helm-charts/systems/my-app/backend/environments/values-dev.yaml file](/helm-charts/systems/my-app/backend/environments/values-dev.yaml) and push the change to GitHub. [But why?](https://i.gifer.com/2Gg.gif)<br>
 Remember how we just pushed the image to DockerHub with the new tag? And remember how ArgoCD is watching the helm/my-app directory? Well, this is how we tell ArgoCD that a new version of the backend microservice is available and should be deployed. We modify the image.tag value in the values-dev.yaml file and wait for ArgoCD to apply the changes.
 
 [This is how gentlemen manage their K8S resources](https://i.imgur.com/2Xntz2P.jpg). We are not some cavemen creating and deleting stuff manually with kubectl. We manage our infrastructure with **GitOps**.
 
-After the Deploy Dev stage is done, and only if it was successful, the Deploy Stage stage will commence. It will do the same thing as the previous stage, but this time modifying the [helm/my-app/backend/environments/values-stage.yaml file](helm/my-app/backend/environments/values-stage.yaml).
+After the Deploy Dev stage is done, and only if it was successful, the Deploy Stage stage will commence. It will do the same thing as the previous stage, but this time modifying the [helm-charts/systems/my-app/backend/environments/values-stage.yaml file](/helm-charts/systems/my-app/backend/environments/values-stage.yaml).
 
 We'll repeat the same process for Prod, but since Prod should be a more delicate environment, the Deploy Prod stage will require authorization from the top level excecutives (in this case it's you, congrats boss) to be executed. You'll receive an email with a link asking you to verify and approve the deployment to Prod. Go ahead and approve it.
 
 That's it! Your app was deployed to all environments! Good job buddy!
 
-This pipeline is automatically triggered everytime there are any changes commited inside the "backend service application code repository" (meaning the [/my-app/backend directory](my-app/backend)). In this manner, if the backend developers commit any changes to the backend service, they will be automatically built and deployed to the cluster. That's some delicious CI/CD for you baby.
+This pipeline is automatically triggered everytime there are any changes commited inside the "backend service application code repository" (meaning the [pplication-code/my-app/backend directory](/application-code/my-app/backend)). In this manner, if the backend developers commit any changes to the backend service, they will be automatically built and deployed to the cluster. That's some delicious CI/CD for you baby.
 
-Now, if the infrastrucure team needs to make changes to the cluster resources, they would work on the "K8S infrastructure repository" (meaning the [/helm/my-app directory](helm/my-app)). Let's say they need to increase the number of pod replicas for the backend service in the prod environment, then they'd change the value of deployment.replicas in the [helm/my-app/backend/environments/values-prod.yaml file](helm/my-app/backend/environments/values-prod.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster. There's some tasty Gitops for you too.
+Now, if the infrastrucure team needs to make changes to the cluster resources, they would work on the "K8S infrastructure repository" (meaning the [helm-charts/systems/my-app directory](/helm-charts/systems/my-app)). Let's say they need to increase the number of pod replicas for the backend service in the prod environment, then they'd change the value of deployment.replicas in the [helm-charts/systems/my-app/backend/environments/values-prod.yaml file](/helm-charts/systems/my-app/backend/environments/values-prod.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster. There's some tasty Gitops for you too.
 
 <br/>
 
 ## Instructions
 
-1. Go to "Pipelines" under "Pipelines" on the left side menu.
-2. Click on "New pipeline".
-3. Select "GitHub".
-4. Select the repo, it should be "your-github-username/automate-all-the-things-braindamage"
-5. Select "Existing Azure Pipelines YAML file".
-6. Under "Branch" select "main" and under "Path" select "/azure-devops/03-build-and-deploy-backend.yml". Click "Continue".
-7. If you DON'T have a hosted parallelism, you'll need to do the same thing as in point 10 from the [infrastructure deployment pipeline](#instructions).
-8. Click on "Run".
+1. On your GitHub repo, go to the "Actions" tab.
+2. Click on the "04-Build & deploy my-app-backend image" workflow.
+3. Click on "Run workflow" (Use workflow from Branch: main).
 
 <br/>
 <br/>
@@ -581,33 +651,28 @@ Now, if the infrastrucure team needs to make changes to the cluster resources, t
 
 ## Description
 
-The [/my-app/frontend directory](my-app) on the repo is meant to represent the frontend microservice code repository. Here you'll find the code files and the corresponding Dockerfile for the frontend service.
+The [application-code/my-app/frontend directory](/application-code/my-app/frontend/) on the repo is meant to represent the frontend microservice code repository. Here you'll find the code files and the corresponding Dockerfile for the frontend service.
 
 Just as in the backend pipeline, there's four stages on this pipeline:
 
 1. We build and push our frontend image to DockerHub.
-2. We deploy to Dev environment in the same manner we did with the backend (modifying the image.tag value in the [helm/my-app/frontend/environments/values-dev.yaml file](helm/my-app/frontend/environments/values-dev.yaml)).
+2. We deploy to Dev environment in the same manner we did with the backend (modifying the image.tag value in the [helm-charts/systems/my-app/frontend/environments/values-dev.yaml file](/helm-charts/systems/my-app/frontend/environments/values-dev.yaml)).
 3. If deployment to Dev was OK, we deploy to Stage.
 4. If deployment to Stage was OK, we'll get an email requesting authorization for deployment to Prod. Give it the thumbs up and our app will be deployed to Prod.
 
 That's it! Your entire app was deployed to all environments! Good job buddy!
 
-Just as with the backend, this pipeline is automatically triggered everytime there are any changes commited inside the "frontend service application code repository" (meaning the [/my-app/frontend directory](my-app/frontend)). In this manner, if the frontend developers commit any changes to the frontend service, they will be automatically built and deployed to the cluster.
+Just as with the backend, this pipeline is automatically triggered everytime there are any changes commited inside the "frontend service application code repository" (meaning the [application-code/my-app/frontend directory](/application-code/my-app/frontend/)). In this manner, if the frontend developers commit any changes to the frontend service, they will be automatically built and deployed to the cluster.
 
-For the infrastructure, same as before. If the infrastrucure team needs to, for example, change the number of pod replicas for the frontend service in the dev environment, then they'd change the value of deployment.replicas in the [helm/my-app/frontend/environments/values-dev.yaml file](helm/my-app/frontend/environments/values-dev.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster.
+For the infrastructure, same as before. If the infrastrucure team needs to, for example, change the number of pod replicas for the frontend service in the dev environment, then they'd change the value of deployment.replicas in the [helm-charts/systems/my-app/frontend/environments/values-dev.yaml file](/helm-charts/systems/my-app/frontend/environments/values-dev.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster.
 
 <br/>
 
 ## Instructions
 
-1. Go to "Pipelines" under "Pipelines" on the left side menu.
-2. Click on "New pipeline".
-3. Select "GitHub".
-4. Select the repo, it should be "your-github-username/automate-all-the-things-braindamage"
-5. Select "Existing Azure Pipelines YAML file".
-6. Under "Branch" select "main" and under "Path" select "/azure-devops/04-build-and-deploy-frontend.yml". Click "Continue".
-7. If you DON'T have a hosted parallelism, you'll need to do the same thing as in point 10 from the [infrastructure deployment pipeline](#instructions).
-8. Click on "Run".
+1. On your GitHub repo, go to the "Actions" tab.
+2. Click on the "05-Build & deploy my-app-frontend image" workflow.
+3. Click on "Run workflow" (Use workflow from Branch: main).
 
 <!-- 9. When it's done, you should be able to access the URLs you got from the ArgoCD Deployment pipeline. But if you go to the URLs too quickly you'll see nothing there. We need to give ArgoCD a little time to notice the changes in the [/helm/my-app/frontend directory](helm/my-app/frontend). By default ArgoCD pulls for changes every three minutes. You can either wait like an adult or go into the ArgoCD web UI and hit "Refresh Apps" like the impatient child that you are.
 11. Check the URLs again.
@@ -628,7 +693,7 @@ For the infrastructure, same as before. If the infrastrucure team needs to, for 
 Let's talk how we're meant to manage the installation, customization and uninstallation of Kubernetes tools from now on.
 
 If you haven't figured it out yet, let me explain how the system works:<br>
-ArgoCD has an Application running which watches the [argo-cd/applications directory](argo-cd/applications). It will deploy all application.yaml's it finds there. Each of these application.yaml's point to their corresponding Helm chart in the [helm directory](helm). This is know as the App of Apps pattern.<br>
+ArgoCD has an Application running which watches the [argo-cd/applications directory](/argo-cd/applications). It will deploy all application.yaml's it finds there. Each of these application.yaml's point to their corresponding Helm chart in the [helm directory](/helm-charts). This is know as the App of Apps pattern.<br>
 When we want to add a new Kubernetes tool to our cluster (let's use Jenkins as an example), we'll do the following:
 
 <br/>
@@ -639,7 +704,7 @@ When we want to add a new Kubernetes tool to our cluster (let's use Jenkins as a
 ```bash
 helm pull jenkinsci/jenkins --untar
 ```
-2. Copy the chart to the [helm/infra directory](helm/infra).
+2. Copy the chart to the [helm-charts/infra directory](/helm-charts/infra).
 3. Create a values-custom.yaml where we'll specify our custom values. We NEVER touch the original values file, we want to have a clear distinction between default configuration and custom configuration.
 4. If we need to add a new manifest, we'll create a directory called custom-templates inside the templates directory in the chart and drop our custom manifest in there. 
 5. Our chart is ready. We'll now create an application.yaml for it.
@@ -655,22 +720,6 @@ We can follow this same logic for deploying new my-app services, for example for
 <br/>
 <br/>
 <p title="Two buttons" align="center"> <img width="460" src="https://i.imgur.com/Fgo7nnZ.jpg"> </p>
-<br/>
-<br/>
-
-# TRACES WITH OPENTELEMETRY AND JAEGER
-
-Here's [the video you should watch](https://youtu.be/FK0uh-7nDSg?feature=shared). As Viktor instructed, we have instrumented our NodeJS backend code with OpenTelemetry. You can check out the changes in the [my-app/backend directory](my-app/backend/).
-
-But we are not done there, we need a tool to collect these metrics and visualize them, here's where Jaeger comes in. Following the instructions mentioned in [Kubernetes Tools Management](#kubernetes-tools-management), we installed Jaeger and made the necessary configurations for it to recieve both traces from out instrumented code, but also from the Istio service mesh.
-
-With OpenTelemetry, you can either manually or automatically instrument your code. I went the automatic way, which will only give you some general tracing information. If you want more details, like for example, how long a specific function takes to run, then you'll have to do some manual instrumentation.
-
-You can access the Jaeger UI by clicking the little arrow icon in the ArgoCD application. Under "services" you'll find the traces generated by our instrumented code and the ones generated by Istio. As our code is automatically instrumented, you won't find many differences between the code generated traces and the Istio generated ones. Just generate some traffic and play around in the UI to see the tracing magic in action.
-
-<br/>
-<br/>
-<p title="K8S Architecture" align="center"> <img width="460" src="https://i.imgur.com/weNsDia.jpg"> </p>
 <br/>
 <br/>
 
@@ -690,15 +739,10 @@ The pipeline will finish with a warning, worry not, this is because the "terrafo
 
 ## Instructions
 
-1. Go to "Pipelines" under "Pipelines" on the left side menu.
-2. Click on "New pipeline".
-3. Select "GitHub".
-4. Select the repo, it should be "your-github-username/automate-all-the-things-braindamage"
-5. Select "Existing Azure Pipelines YAML file".
-6. Under "Branch" select "main" and under "Path" select "/azure-devops/05-destroy-all-the-things.yml". Click "Continue".
-7. If you DON'T have a hosted parallelism, you'll need to do the same thing as in point 10 from the [infrastructure deployment pipeline](#instructions).
-8. Click on "Run".
-9. There's two AWS resources that for some reason don't get destroyed: a DHCP Option Set and an Auto Scaling Managed Rule. I'm pretty sure these don't generate any expenses but you can go and delete them manually just in case. I'm really sorry about this... I have brought [shame](https://i.imgur.com/PIm1apF.gifv) upon my family...
+1. On your GitHub repo, go to the "Actions" tab.
+2. Click on the "06-Destroy infrastructure" workflow.
+3. Click on "Run workflow" (Use workflow from Branch: main).
+4. There's two AWS resources that for some reason don't get destroyed: a DHCP Option Set and an Auto Scaling Managed Rule. I'm pretty sure these don't generate any expenses but you can go and delete them manually just in case. I'm really sorry about this... I have brought [shame](https://i.imgur.com/PIm1apF.gifv) upon my family...
 
 <br/>
 <br/>
@@ -738,7 +782,7 @@ Special thanks to all these wonderful YouTube people. This wouldn't have been po
 
 ## On the next edition
 
-[Automate All The Things Transcendence Edition](https://github.com/tferrari92/automate-all-the-things-transcendence):
+[Automate All The Things Nirvana Edition](https://github.com/tferrari92/automate-all-the-things-nirvana):
 
 - We'll start using Horizontal Pod Autoscalers.
 - We'll automate TLS certificates provisioning with Kubernetes Cert Manager.

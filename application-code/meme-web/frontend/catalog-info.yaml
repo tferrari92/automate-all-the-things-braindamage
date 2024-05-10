@@ -1,0 +1,35 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: meme-web-frontend
+  description: meme-web frontend service
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: meme-web-frontend
+  tags:
+    - nginx
+  links:
+    - title: Documentation
+      url: https://github.com/AATT_GITHUB_USERNAME/automate-all-the-things-unnamed
+    - url: https://admin.example-org.com
+      title: Admin Dashboard
+      icon: dashboard
+      type: admin-dashboard
+    - url: https://grafana.domain.com/
+      title: metrics
+      icon: analytics
+      type: metrics-dashboard
+    - url: https://grafana.domain.com/
+      title: logs
+      icon: assignment
+      type: logs-dashboard  
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/meme-web-frontend-subteam
+  system: meme-web
+  dependsOn:
+    - component:default/meme-web-backend
+  consumesApis:
+    - meme-web-backend-api
+

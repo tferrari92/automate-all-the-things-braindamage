@@ -13,11 +13,11 @@ spec:
     server: https://kubernetes.default.svc  
   project: service-mesh
   source:
-    path: helm/infra/service-mesh/flagger
+    path: helm-charts/infra/flagger
     helm:
       valueFiles:
         - values-custom.yaml
-    repoURL: https://github.com/AATT_GITHUB_USERNAME/automate-all-the-things-braindamage.git # This value was modified by the initial-setup python script
+    repoURL: https://github.com/AATT_GITHUB_USERNAME/automate-all-the-things-unnamed.git # This value was modified by the initial-setup python script
   syncPolicy:
     automated:
       prune: true

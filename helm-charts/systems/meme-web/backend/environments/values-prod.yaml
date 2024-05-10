@@ -1,0 +1,13 @@
+environment: prod
+
+redis_host: 
+
+deployment:
+  image:
+    tag: 2
+  replicas: 1
+  labels:
+    full-name: meme-web-backend-prod # This value was modified by the initial-setup python script
+    
+secret:
+  redis_pass:

@@ -1,0 +1,136 @@
+backstage:
+  command: ["node", "packages/backend", "--config", "app-config.production.yaml"]
+
+  image:
+    registry: "" # This is necessary to override the default value "ghcr.io"
+    repository: AATT_DOCKERHUB_USERNAME/backstage
+    tag: "24" # This value was modified by the backstage build and push pipeline
+
+  extraEnvVars:
+    - name: GITHUB_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: github-token
+          key: GITHUB_TOKEN
+
+  appConfig:
+    catalog:
+      rules:
+        - allow:
+            - Component
+            - API
+            - Resource
+            - System
+            - Domain
+            - Location
+            - User
+            - Group
+            - Template
+
+      refreshIntervalSeconds: 5 # In seconds. Default is 100
+
+      providers:
+        github:
+          # Catalogs
+          catalogsProvider:
+            organization: 'AATT_GITHUB_USERNAME' # This value was modified by the initial-setup script
+            catalogPath: '/application-code/**/*catalog-info.yaml' # this will search all folders for files that end in template.yaml
+            filters:
+              branch: 'main' # string
+              repository: 'automate-all-the-things-braindamage' # Regex
+            schedule: # same options as in TaskScheduleDefinition
+              frequency: { minutes: 1 }
+              timeout: { minutes: 3 }
+
+          # Resources
+          resourcesProvider:
+            organization: 'AATT_GITHUB_USERNAME' # This value was modified by the initial-setup script
+            catalogPath: '/application-code/**/*catalog-info.yaml' # this will search all folders for files that end in template.yaml
+            filters:
+              branch: 'main' # string
+              repository: 'automate-all-the-things-braindamage' # Regex
+            schedule: # same options as in TaskScheduleDefinition
+              frequency: { minutes: 1 }
+              timeout: { minutes: 3 }
+
+          # APIs
+          apisProvider:
+            organization: 'AATT_GITHUB_USERNAME' # This value was modified by the initial-setup script
+            catalogPath: '/application-code/**/*api-info.yaml' # this will search all folders for files that end in template.yaml
+            filters:
+              branch: 'main' # string
+              repository: 'automate-all-the-things-braindamage' # Regex
+            schedule: # same options as in TaskScheduleDefinition
+              frequency: { minutes: 1 }
+              timeout: { minutes: 3 }
+
+          # Templates
+          templatesProvider:
+            organization: 'AATT_GITHUB_USERNAME' # This value was modified by the initial-setup script
+            catalogPath: '/backstage/entities/templates/**/*template.yaml' # this will search all folders for files that end in template.yaml
+            filters:
+              branch: 'main' # string
+              repository: 'automate-all-the-things-braindamage' # Regex
+            schedule: # same options as in TaskScheduleDefinition
+              frequency: { minutes: 1 }
+              timeout: { minutes: 3 }
+
+          # Systems
+          systemsProvider:
+            organization: 'AATT_GITHUB_USERNAME' # This value was modified by the initial-setup script
+            catalogPath: '/backstage/entities/systems/**/*.yaml' # this will search all folders for files that end in .yaml
+            filters:
+              branch: 'main' # string
+              repository: 'automate-all-the-things-braindamage' # Regex
+            schedule: # same options as in TaskScheduleDefinition
+              frequency: { minutes: 1 }
+              timeout: { minutes: 3 }
+
+          # Groups
+          groupsProvider:
+            organization: 'AATT_GITHUB_USERNAME' # This value was modified by the initial-setup script
+            catalogPath: '/backstage/entities/groups/**/*.yaml' # this will search all folders for files that end in .yaml
+            filters: # optional filters
+              branch: 'main' # optional string
+              repository: 'automate-all-the-things-braindamage' # optional Regex
+            schedule: # same options as in TaskScheduleDefinition
+              frequency: { minutes: 1 }
+              timeout: { minutes: 3 }
+
+          # Users
+          usersProvider:
+            organization: 'AATT_GITHUB_USERNAME' # This value was modified by the initial-setup script
+            catalogPath: '/backstage/entities/users/**/*.yaml' # this will search all folders for files that end in .yaml
+            filters: # optional filters
+              branch: 'main' # optional string
+              repository: 'automate-all-the-things-braindamage' # optional Regex
+            schedule: # same options as in TaskScheduleDefinition
+              frequency: { minutes: 1 }
+              timeout: { minutes: 3 }
+
+github_token: AgBPjggxRgs2xhjqbvKYu1RSG9CUj6hP+FfDwiNggLj5KbXrLiQrXc/L2zF6oTdv/B63Z0m3IhnbE+/3NL/TNj4ItfDH0VOed2Yqth4Ye432OQ/rj3v8ev/uOw4UtZqngAPTBH03F+6BNkONVpHK79HB8uf1INqA74D+4z4IBO2Xim+KRJd8gt8Vtxx5BAYb25kw6GLxp4KM5eCGn9WKImKwvzuqcDE5BeCNFLWfo8Fpu/dnpPyogJ237L5ODaX2ObijtJUAutXwWsCBTI7eXn0Jv1IYEHnxcYlOtjpP1bl/Z4XkvL/befUpm8mSQUG96fljEhiJXaCgekrdwSgrzX4uSseOs/EAH+6VZQrU6Yv4Yb9n9VmfXxLKzcFHeedo/jUFRCypYxKIUeW5bsP9Z7IGByKZU6dyt9quKT9sDTdMwWq6zHhG5X+GJkRyUSNKq1gHJwAskD7KMHG87CXHg7VBWjNL1bxlRu96hlcZ0t7kQwgSePFxkgmwbggwR2p3r1gWxDgt6uJMP6xJiGiIYD43GA6Vc3huSVHgyd55pBLaY6NKh9/BZThauP7jl4o7xaonOhdhSwQtD23oAHFJyN+LeFLsavmOzuAHVvh4GdIh4zRciXWvLhy1uN6dVtq9lAJXtFKlm0tLCT8E1tBhDg3tgBZMXB8+meCdgJARLueY/+J5eVlipochnj38EvoB0NoV7dGZH3JaO8YyV8KRr28nKlhhJjyhAwAsbwY33gU5m7XzYRGA0gMl # This value was modified by the sealed-secrets pipeline
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
+    alb.ingress.kubernetes.io/success-codes: '200'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+
+
+postgresql:
+  enabled: true
+  auth:
+    password: "backstage" # I hard-coded a password because for some reason, when updating the backstage with a new image tag, the new backstage pod can't connect to the database:
+                          # Backstage pod log: Backend failed to start up Error: Failed to connect to the database to make sure that 'backstage_plugin_catalog' exists, error: password authentication failed for user "bn_backstage"    
+                          # Postgres pod log: FATAL:  password authentication failed for user "bn_backstage"
+
+serviceAccount:
+  create: true

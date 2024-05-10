@@ -1,0 +1,11 @@
+system: ${{ values.system }} 
+
+service: ${{ values.service }} 
+
+deployment:
+  image:
+    repository: 
+  labels:
+    system: ${{ values.system }}
+    service: ${{ values.service }}
+    backstage.io/kubernetes-id: ${{ values.system }}-${{ values.service }}

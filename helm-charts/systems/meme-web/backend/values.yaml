@@ -1,0 +1,17 @@
+system: meme-web # This value was modified by the initial-setup python script
+
+service: backend
+
+port: 3000
+
+deployment:
+  labels:
+    # app: meme-web-frontend
+    service: backend
+    system: meme-web # This value was modified by the initial-setup python script
+    backstage.io/kubernetes-id: meme-web-backend # This value was modified by the initial-setup python script
+    istio: monitor
+
+  
+  image:
+    repository: AATT_DOCKERHUB_USERNAME/meme-web-backend # This value was modified by the initial-setup python script
