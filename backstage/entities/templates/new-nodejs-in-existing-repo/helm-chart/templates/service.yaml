@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.system }}-{{ .Values.service }}-{{ .Values.environment }}-service
 spec:
   selector:
-    app: {{ .Values.system }}-{{ .Values.service }}-{{ .Values.environment }}
+    full-name: {{ .Values.system }}-{{ .Values.service }}-{{ .Values.environment }}
   ports:
     - protocol: TCP
       port: 3000
