@@ -6,3 +6,9 @@ deployment:
   replicas: 1
   labels:
     full-name: ${{ values.system }}-${{ values.service }}-dev
+
+configmap: 
+  nginxConf: |-
+      location /api {
+          proxy_pass http://<name-of-system>-backend-dev-service:3000/;
+      }
