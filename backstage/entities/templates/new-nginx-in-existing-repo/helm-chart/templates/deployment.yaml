@@ -26,9 +26,9 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: nginx-conf
+            - name: nginx-conf-configmap
               mountPath: /tmp
       volumes:
-        - name: nginx-conf
+        - name: nginx-conf-configmap
           configMap:
-            name: {{ .Values.system }}-{{ .Values.service }}-{{ .Values.environment }}-nginx-conf
+            name: {{ .Values.system }}-{{ .Values.service }}-{{ .Values.environment }}-nginx-conf-configmap
