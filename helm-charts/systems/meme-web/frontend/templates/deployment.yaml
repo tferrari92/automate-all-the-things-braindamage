@@ -33,7 +33,7 @@ spec:
             - name: images-configmap
               mountPath: /usr/share/nginx/html/resources
             - name: nginx-conf-configmap
-              mountPath: /etc/nginx/conf.d
+              mountPath: /tmp
       volumes:
         - name: images-configmap
           configMap:
