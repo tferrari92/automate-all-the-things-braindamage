@@ -5,7 +5,7 @@ deployment:
     tag: 2
   replicas: 1
   labels:
-    full-name: meme-web-frontend-dev # This value was modified by the initial-setup python script
+    full-name: meme-web-frontend-dev
 
 configmap: 
   nginxConf: |-
