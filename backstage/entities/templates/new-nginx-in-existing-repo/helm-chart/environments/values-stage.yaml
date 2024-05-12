@@ -10,5 +10,5 @@ deployment:
 configmap: 
   nginxConf: |-
       location /api {
-          proxy_pass http://<name-of-system>-backend-stage-service:3000/;
+          proxy_pass http://${{ values.system }}-backend-stage-service:3000/;
       }
