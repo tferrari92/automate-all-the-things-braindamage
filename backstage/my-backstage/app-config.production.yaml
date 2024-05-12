@@ -16,6 +16,9 @@ backend:
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
     img-src: ["'self'", 'data:', 'https://i.imgur.com']
 
+    # Since we are not using HTTPS we require this. Without it backend resources will not load in the UI when accesing through the ingress. See: https://github.com/backstage/backstage/issues/23247#issuecomment-1971454432
+    upgrade-insecure-requests: false 
+
   # Note that the baseUrl should be the URL that the browser and other clients
   # should use when communicating with the backend, i.e. it needs to be
   # reachable not just from within the backend host, but from all of your
