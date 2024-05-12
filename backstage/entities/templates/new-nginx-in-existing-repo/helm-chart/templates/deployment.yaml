@@ -28,3 +28,7 @@ spec:
           volumeMounts:
             - name: nginx-conf
               mountPath: /tmp
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: {{ .Values.system }}-{{ .Values.service }}-{{ .Values.environment }}-nginx-conf
