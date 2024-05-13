@@ -40,6 +40,7 @@ This Braindamage Edition builds upon the [Overload Edition](https://github.com/t
 
 ### Spin-offs:
 - [Backstage Minikube Lab](https://github.com/tferrari92/backstage-minikube-lab)
+- [Backstage Minikube Lab Reloaded](https://github.com/tferrari92/backstage-minikube-lab-reloaded)
 
 <br/>
 
