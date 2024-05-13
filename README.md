@@ -65,6 +65,7 @@ This Braindamage Edition builds upon the [Overload Edition](https://github.com/t
     - [Templates I've created](#templates-ive-created)
     - [My arbitrary rules](#my-arbitrary-rules)
   - [Meme-Web](#meme-web)
+  - [Challenge](#challenge)
 - [AWS Infrastructure Deployment Pipeline](#aws-infrastructure-deployment-pipeline)
   - [Description](#description)
   - [Instructions](#instructions)
