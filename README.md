@@ -769,7 +769,7 @@ The pipeline will finish with a warning, worry not, this is because the "terrafo
 ## Instructions
 
 1. On your GitHub repo, go to the "Actions" tab.
-2. Click on the "06-Destroy infrastructure" workflow.
+2. Click on the "04-Destroy infrastructure" workflow.
 3. Click on "Run workflow" (Use workflow from Branch: main).
 4. There's two AWS resources that for some reason don't get destroyed: a DHCP Option Set and an Auto Scaling Managed Rule. I'm pretty sure these don't generate any expenses but you can go and delete them manually just in case. I'm really sorry about this... I have brought [shame](https://i.imgur.com/PIm1apF.gifv) upon my family...
 
