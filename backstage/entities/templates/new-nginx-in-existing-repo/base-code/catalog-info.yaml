@@ -30,7 +30,7 @@ spec:
   lifecycle: experimental
   owner: ${{ values.owner }}
   system: ${{ values.system }}
-  # dependsOn:
-  #   - 
-  # providesApis:
-  #   - 
+  dependsOn:
+    - component:default/${{ values.system }}-backend
+  # consumesApis:
+  #   - ${{ values.system }}-backend-api
