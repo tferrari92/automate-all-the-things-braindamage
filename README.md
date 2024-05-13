@@ -451,6 +451,7 @@ Using the templates on the "Create" tab:
 2. Create a new System that is owned by that Group, merge the generated Pull Request into your main branch.
 3. Create a new NGINX service that belongs to that System, merge the generated Pull Request into your main branch.
 4. Create a new Node.js service that belongs to that System, merge the generated Pull Request into your main branch.
+5. Run the workflows to build and deploy the new services.
 
 If you did everything right, you should see this new system with both services running when you deploy to EKS.
 
