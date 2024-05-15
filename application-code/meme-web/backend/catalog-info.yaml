@@ -11,18 +11,22 @@ metadata:
   links:
     - title: Documentation
       url: https://github.com/AATT_GITHUB_USERNAME/automate-all-the-things-braindamage
+      icon: docs
     - title: Admin Dashboard
       type: admin-dashboard
       icon: dashboard
       url: https://admin.example-org.com
     - title: Metrics
       type: metrics-dashboard
-      icon: analytics
       url: https://grafana.domain.com/
     - title: Logs
       type: logs-dashboard  
       icon: assignment
       url: https://grafana.domain.com/
+    - title: Helm Chart
+      type: helm-chart 
+      icon: github
+      url: https://github.com/AATT_GITHUB_USERNAME/automate-all-the-things-braindamage/tree/main/helm-charts/systems/meme-web/backend
 spec:
   type: service
   lifecycle: production
