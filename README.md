@@ -377,7 +377,7 @@ You can check the automatic discovery configuration under catalog.providers.gith
 ### Templates I've created
 
 #### - New Backstage System
-Creates a new Backstage System with the provided information. A System in Backstage is a collection of entities (services, resources, APIs, etc.) that cooperate to perform a some function. For example, we will have a System called "my-app" that includes the my-app-frontend service, the my-app-backend service, the my-app-redis database and the my-app-backend API.
+Creates a new Backstage System with the provided information. A System in Backstage is a collection of entities (services, resources, APIs, etc.) that cooperate to perform a some function. For example, we will have a System called "meme-web" that includes the meme-web-frontend service, the meme-web-backend service, the meme-web-redis database and the meme-web-backend API.
 
 It generates a Pull Request which includes a new System manifest. When merged, the System catalog entity will be automatically added to the Backstage catalog by the GitHub Discovery plugin.
 </br>
@@ -497,7 +497,7 @@ resource "aws_instance" "ec2_instance" {
 
 Commit the changes and run the pipeline again. The backend deployment step will fail, so the pipeline will finish with a warning, you can ignore it.
 
-The pipeline will also modify the [helm-charts/systems/my-app/backend/environments](/helm-charts/systems/my-app/backend/environments) files on the repo. It will get the endpoints for each ElastiCache DB from terraform outputs and include them in the values of each environment.
+The pipeline will also modify the [helm-charts/systems/meme-web/backend/environments](/helm-charts/systems/meme-web/backend/environments) files on the repo. It will get the endpoints for each ElastiCache DB from terraform outputs and include them in the values of each environment.
 
 Oh and lastly... it will export an artifact with the instructions on how to connect to the EC2 instance.
 
@@ -529,7 +529,7 @@ You will see that not all manifests have the ArgoCD Sync Wave annotation. If I d
 The sequence will go like this: 
 1. At the highest level we will make sure that all ArgoCD self-management resources are deployed first. They will get number "-12" to "-10"
 2. Then our infrastructure tools will be deployed (observability, service-mesh, etc.). They will get numbers "-5" to "-1".
-3. My-app resources come next. Backend will get "0" and Frontend "1".
+3. meme-web resources come next. Backend will get "0" and Frontend "1".
 4. Within Backend and Frontend, the individual manifest also get Sync Waves. These sync wave numbers will be evaluated within the scope of the Application in which they are deployed, so they will not compete with the numbers assigned to, for example, the Prometheus Application.
 
 **IMPORTANT**:<br>
@@ -577,11 +577,11 @@ We won't go into what ArgoCD is, for that you have [this video](https://youtu.be
 This pipeline will use the [ArgoCD Helm Chart](/helm-charts/infra/argo-cd/) in our repo to deploy ArgoCD into our EKS.<br>
 The first thing it will do is run the necessary tasks to connect to our the cluster. After this, ArgoCD will be installed, along with its Ingress.
 
-It will then create the necessary resources for ArgoCD to be self-managed and to apply the [App of Apps pattern](https://youtu.be/2pvGL0zqf9o). ArgoCD will be watching the helm charts in the [helm-charts](/helm-charts) directory in our repo, it will automatically create all the resources it finds and apply any future changes me make there. The [helm-charts/infra](/helm-charts/systems/my-app) and [helm-charts/systems/my-app](/helm-charts/systems/my-app) directories simulate what would be our K8S infrastructure repositories would be.
+It will then create the necessary resources for ArgoCD to be self-managed and to apply the [App of Apps pattern](https://youtu.be/2pvGL0zqf9o). ArgoCD will be watching the helm charts in the [helm-charts](/helm-charts) directory in our repo, it will automatically create all the resources it finds and apply any future changes me make there. The [helm-charts/infra](/helm-charts/systems/meme-web) and [helm-charts/systems/meme-web](/helm-charts/systems/meme-web) directories simulate what would be our K8S infrastructure repositories would be.
 
 If you want to know more about Helm, [here's another Nana video](https://youtu.be/-ykwb1d0DXU).
 
-Following up, it will get the Istio Gateway endpoint and put it into the [frontend values file](/helm-charts/systems/my-app/frontend/values.yaml). It will also export the endpoint for each environment as an artifact.
+Following up, it will get the Istio Gateway endpoint and put it into the [frontend values file](/helm-charts/systems/meme-web/frontend/values.yaml). It will also export the endpoint for each environment as an artifact.
 
 Finally the pipeline will get the ArgoCD web UI URL and admin account password and export them as an artifact too. You might need to wait a few seconds for the URL to be active, this is because an AWS Load Balancer takes a little time to be deployed.
 
@@ -610,7 +610,7 @@ Up until now, we have been leaving our Kubernetes secrtes exposed in our repo. A
 
 From now on, we will encrypt them, and for this we will use Bitnami Sealed Secrets. As always, I'm not going into details on how the tool works, but you can check out [this video](https://youtu.be/wWMJCY2E0d4?si=zX93I7hji-6w7hnX) from KodeKloud.
 
-You could easily encrypt the secrets yourselves using the kubeseal CLI tool, but I made a pipeline to make it easier. Before running, the pipeline will require you to introduce the Redis passwords for each environment. The pipeline will then install the Kubeseal CLI tool and with it, it will generate Sealed Secrets and save the values of the encrypted passwords to the [values files of each environment](/helm-charts/systems/my-app/backend/environments/). The [sealed secret manifest](/helm-charts/systems/my-app/backend/templates/redis-sealed-secret.yaml) will use these values to create the SealedSecret objects in the cluster.
+You could easily encrypt the secrets yourselves using the kubeseal CLI tool, but I made a pipeline to make it easier. Before running, the pipeline will require you to introduce the Redis passwords for each environment. The pipeline will then install the Kubeseal CLI tool and with it, it will generate Sealed Secrets and save the values of the encrypted passwords to the [values files of each environment](/helm-charts/systems/meme-web/backend/environments/). The [sealed secret manifest](/helm-charts/systems/meme-web/backend/templates/redis-sealed-secret.yaml) will use these values to create the SealedSecret objects in the cluster.
 
 Same will be done for the GitHub token secret that Backstage will use.
 
@@ -641,33 +641,33 @@ Same will be done for the GitHub token secret that Backstage will use.
 
 Our app is made of two microservices (backend and frontend) and a database. Let's start with the backend.
 
-The [application-code/my-app/backend directory](/application-code/my-app/backend) on the repo is meant to represent the backend microservice application code repository. Here you'll find the code files and the corresponding Dockerfile for the backend service.
+The [application-code/meme-web/backend directory](/application-code/meme-web/backend) on the repo is meant to represent the backend microservice application code repository. Here you'll find the code files and the corresponding Dockerfile for the backend service.
 
 There's four stages on this pipeline:
 
 On the Build stage we will use Docker to build a container image from the Dockerfile, tag it with the number of the pipeline run and push it to your DockerHub registry.
 
-On the Deploy Dev stage, we will checkout the repo and modify the [helm-charts/systems/my-app/backend/environments/values-dev.yaml file](/helm-charts/systems/my-app/backend/environments/values-dev.yaml) and push the change to GitHub. [But why?](https://i.gifer.com/2Gg.gif)<br>
-Remember how we just pushed the image to DockerHub with the new tag? And remember how ArgoCD is watching the helm/my-app directory? Well, this is how we tell ArgoCD that a new version of the backend microservice is available and should be deployed. We modify the image.tag value in the values-dev.yaml file and wait for ArgoCD to apply the changes.
+On the Deploy Dev stage, we will checkout the repo and modify the [helm-charts/systems/meme-web/backend/environments/values-dev.yaml file](/helm-charts/systems/meme-web/backend/environments/values-dev.yaml) and push the change to GitHub. [But why?](https://i.gifer.com/2Gg.gif)<br>
+Remember how we just pushed the image to DockerHub with the new tag? And remember how ArgoCD is watching the helm/meme-web directory? Well, this is how we tell ArgoCD that a new version of the backend microservice is available and should be deployed. We modify the image.tag value in the values-dev.yaml file and wait for ArgoCD to apply the changes.
 
 [This is how gentlemen manage their K8S resources](https://i.imgur.com/2Xntz2P.jpg). We are not some cavemen creating and deleting stuff manually with kubectl. We manage our infrastructure with **GitOps**.
 
-After the Deploy Dev stage is done, and only if it was successful, the Deploy Stage stage will commence. It will do the same thing as the previous stage, but this time modifying the [helm-charts/systems/my-app/backend/environments/values-stage.yaml file](/helm-charts/systems/my-app/backend/environments/values-stage.yaml).
+After the Deploy Dev stage is done, and only if it was successful, the Deploy Stage stage will commence. It will do the same thing as the previous stage, but this time modifying the [helm-charts/systems/meme-web/backend/environments/values-stage.yaml file](/helm-charts/systems/meme-web/backend/environments/values-stage.yaml).
 
 We'll repeat the same process for Prod, but since Prod should be a more delicate environment, the Deploy Prod stage will require authorization from the top level excecutives (in this case it's you, congrats boss) to be executed. You'll receive an email with a link asking you to verify and approve the deployment to Prod. Go ahead and approve it.
 
 That's it! Your app was deployed to all environments! Good job buddy!
 
-This pipeline is automatically triggered everytime there are any changes commited inside the "backend service application code repository" (meaning the [pplication-code/my-app/backend directory](/application-code/my-app/backend)). In this manner, if the backend developers commit any changes to the backend service, they will be automatically built and deployed to the cluster. That's some delicious CI/CD for you baby.
+This pipeline is automatically triggered everytime there are any changes commited inside the "backend service application code repository" (meaning the [pplication-code/meme-web/backend directory](/application-code/meme-web/backend)). In this manner, if the backend developers commit any changes to the backend service, they will be automatically built and deployed to the cluster. That's some delicious CI/CD for you baby.
 
-Now, if the infrastrucure team needs to make changes to the cluster resources, they would work on the "K8S infrastructure repository" (meaning the [helm-charts/systems/my-app directory](/helm-charts/systems/my-app)). Let's say they need to increase the number of pod replicas for the backend service in the prod environment, then they'd change the value of deployment.replicas in the [helm-charts/systems/my-app/backend/environments/values-prod.yaml file](/helm-charts/systems/my-app/backend/environments/values-prod.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster. There's some tasty Gitops for you too.
+Now, if the infrastrucure team needs to make changes to the cluster resources, they would work on the "K8S infrastructure repository" (meaning the [helm-charts/systems/meme-web directory](/helm-charts/systems/meme-web)). Let's say they need to increase the number of pod replicas for the backend service in the prod environment, then they'd change the value of deployment.replicas in the [helm-charts/systems/meme-web/backend/environments/values-prod.yaml file](/helm-charts/systems/meme-web/backend/environments/values-prod.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster. There's some tasty Gitops for you too.
 
 <br/>
 
 ## Instructions
 
 1. On your GitHub repo, go to the "Actions" tab.
-2. Click on the "04-Build & deploy my-app-backend image" workflow.
+2. Click on the "04-Build & deploy meme-web-backend image" workflow.
 3. Click on "Run workflow" (Use workflow from Branch: main).
 
 <br/>
@@ -680,30 +680,30 @@ Now, if the infrastrucure team needs to make changes to the cluster resources, t
 
 ## Description
 
-The [application-code/my-app/frontend directory](/application-code/my-app/frontend/) on the repo is meant to represent the frontend microservice code repository. Here you'll find the code files and the corresponding Dockerfile for the frontend service.
+The [application-code/meme-web/frontend directory](/application-code/meme-web/frontend/) on the repo is meant to represent the frontend microservice code repository. Here you'll find the code files and the corresponding Dockerfile for the frontend service.
 
 Just as in the backend pipeline, there's four stages on this pipeline:
 
 1. We build and push our frontend image to DockerHub.
-2. We deploy to Dev environment in the same manner we did with the backend (modifying the image.tag value in the [helm-charts/systems/my-app/frontend/environments/values-dev.yaml file](/helm-charts/systems/my-app/frontend/environments/values-dev.yaml)).
+2. We deploy to Dev environment in the same manner we did with the backend (modifying the image.tag value in the [helm-charts/systems/meme-web/frontend/environments/values-dev.yaml file](/helm-charts/systems/meme-web/frontend/environments/values-dev.yaml)).
 3. If deployment to Dev was OK, we deploy to Stage.
 4. If deployment to Stage was OK, we'll get an email requesting authorization for deployment to Prod. Give it the thumbs up and our app will be deployed to Prod.
 
 That's it! Your entire app was deployed to all environments! Good job buddy!
 
-Just as with the backend, this pipeline is automatically triggered everytime there are any changes commited inside the "frontend service application code repository" (meaning the [application-code/my-app/frontend directory](/application-code/my-app/frontend/)). In this manner, if the frontend developers commit any changes to the frontend service, they will be automatically built and deployed to the cluster.
+Just as with the backend, this pipeline is automatically triggered everytime there are any changes commited inside the "frontend service application code repository" (meaning the [application-code/meme-web/frontend directory](/application-code/meme-web/frontend/)). In this manner, if the frontend developers commit any changes to the frontend service, they will be automatically built and deployed to the cluster.
 
-For the infrastructure, same as before. If the infrastrucure team needs to, for example, change the number of pod replicas for the frontend service in the dev environment, then they'd change the value of deployment.replicas in the [helm-charts/systems/my-app/frontend/environments/values-dev.yaml file](/helm-charts/systems/my-app/frontend/environments/values-dev.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster.
+For the infrastructure, same as before. If the infrastrucure team needs to, for example, change the number of pod replicas for the frontend service in the dev environment, then they'd change the value of deployment.replicas in the [helm-charts/systems/meme-web/frontend/environments/values-dev.yaml file](/helm-charts/systems/meme-web/frontend/environments/values-dev.yaml), commit the change and wait for ArgoCD to apply the changes on the cluster.
 
 <br/>
 
 ## Instructions
 
 1. On your GitHub repo, go to the "Actions" tab.
-2. Click on the "05-Build & deploy my-app-frontend image" workflow.
+2. Click on the "05-Build & deploy meme-web-frontend image" workflow.
 3. Click on "Run workflow" (Use workflow from Branch: main).
 
-<!-- 9. When it's done, you should be able to access the URLs you got from the ArgoCD Deployment pipeline. But if you go to the URLs too quickly you'll see nothing there. We need to give ArgoCD a little time to notice the changes in the [/helm/my-app/frontend directory](helm/my-app/frontend). By default ArgoCD pulls for changes every three minutes. You can either wait like an adult or go into the ArgoCD web UI and hit "Refresh Apps" like the impatient child that you are.
+<!-- 9. When it's done, you should be able to access the URLs you got from the ArgoCD Deployment pipeline. But if you go to the URLs too quickly you'll see nothing there. We need to give ArgoCD a little time to notice the changes in the [/helm/meme-web/frontend directory](helm/meme-web/frontend). By default ArgoCD pulls for changes every three minutes. You can either wait like an adult or go into the ArgoCD web UI and hit "Refresh Apps" like the impatient child that you are.
 11. Check the URLs again.
 12. On the top left of the website you'll see the "Visit count". This number is being stored in the ElatiCache DB and accessed through the backend.
 13. Hope you like the web I made for you. If you did, go leave a star on [my repo](https://github.com/tferrari92/automate-all-the-things-insane). -->
@@ -744,7 +744,7 @@ That's it! Now you just need to wait. When Argo sees the new application.yaml it
 If you need to make any further customizations to the chart, you can modify the values-custom.yaml or the contents of the custom-templates directory.<br>
 If you want to remove the tool from your cluster, [just delete the application.yaml you created and wait](https://i.imgur.com/KcSXPER.jpg).
 
-We can follow this same logic for deploying new my-app services, for example for a second backend.
+We can follow this same logic for deploying new services.
 
 <br/>
 <br/>
