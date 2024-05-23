@@ -57,7 +57,7 @@ This Braindamage Edition builds upon the [Overload Edition](https://github.com/t
   - [Create secrets for GitHub Actions](#create-secrets-for-github-actions)
 - [Backstage.io](#backstageio)
   - [Prerequisites](#prerequisites-1)
-  - [Initial setup](#initial-setup-1)
+  - [Initial setup](#initial-setup)
    - [Get GitHub PAT](#get-github-pat-personal-access-token)
   - [Run Backstage locally](#run-backstage-locally)
   - [Customising Backstage](#customising-backstage)
