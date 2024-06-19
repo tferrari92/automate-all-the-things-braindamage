@@ -812,9 +812,16 @@ Special thanks to all these wonderful YouTube people. This wouldn't have been po
 
 ## On the next edition
 
-[Automate All The Things Nirvana Edition](https://github.com/tferrari92/automate-all-the-things-nirvana):
+[Automate All The Things Transcendence Edition](https://github.com/tferrari92/automate-all-the-things-transcendence):
 
 - We'll start using Horizontal Pod Autoscalers.
-- We'll automate TLS certificates provisioning with Kubernetes Cert Manager.
-- We'll automate DNS records provisioning with Kubernetes External DNS.
-- We'll ditch DockerHub and start using our self-hosted image registry with Harbor.
+- We'll start using Crossplane.
+- Beefier Backstage deployment with:
+  - New plugins:
+    - GitHub Actions plugin
+    - GitHub Insights plugin
+    - ArgoCD plugin
+    - Grafana plugin
+  - New templates:
+    - Create new S3 Bucket
+    - Create new EKS Cluster
