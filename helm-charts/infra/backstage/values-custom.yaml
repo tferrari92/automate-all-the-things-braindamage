@@ -4,7 +4,7 @@ backstage:
   image:
     registry: "" # This is necessary to override the default value "ghcr.io"
     repository: AATT_DOCKERHUB_USERNAME/backstage
-    tag: "24" # This value was modified by the backstage build and push pipeline
+    tag: "0" # This value was modified by the backstage build and push pipeline
 
   extraEnvVars:
     - name: GITHUB_TOKEN
